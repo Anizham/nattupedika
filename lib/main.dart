@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nattupedika/SignIn.dart';
 
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -11,8 +10,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Nattupedika',
         theme: ThemeData(
-          primarySwatch: Colors.lime,
+          primarySwatch: Colors.green,
         ),
-        home: SignInPage());
+        home: SignInPage(),);
   }
 }
