@@ -1,7 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nattupedika/Home.dart';
+import 'package:nattupedika/CustomerHome.dart';
 
 class SignInPage extends StatelessWidget {
+  final _emailController=TextEditingController();
+  final _passwordController=TextEditingController();
+
+  Future<FirebaseUser> login(String email,String password) async{
+    FirebaseAuth _auth=FirebaseAuth.instance;
+
+    try{
+      AuthResult result =await _auth.signInWithEmailAndPassword(email: email, password: password);
+      FirebaseUser user =result.user;
+      return user;
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,6 +55,7 @@ class SignInPage extends StatelessWidget {
                         // hintStyle: ,
                         focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.green))),
+                    controller: _emailController,
                   ),
                   SizedBox(height: 10.0),
                   TextField(
@@ -50,6 +68,7 @@ class SignInPage extends StatelessWidget {
                         focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.green))),
                     obscureText: true,
+                    controller: _passwordController,
                   ),
 
                   SizedBox(height: 50.0),
@@ -61,11 +80,18 @@ class SignInPage extends StatelessWidget {
                         color: Colors.green,
                         elevation: 7.0,
                         child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => HomePage()),
-                            );
+                          onTap: () async{
+                            final _email=_emailController.text.toString().trim();
+                            final _password=_passwordController.text.toString().trim();
+                            FirebaseUser user=await login(_email, _password);
+                            if(user!=null){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => HomePage(email: user.email,)),
+                              );
+                            }else{
+                              print("Not able to login");
+                            }
                           },
                           child: Center(
                             child: Text(

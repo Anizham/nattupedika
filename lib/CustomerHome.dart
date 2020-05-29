@@ -6,12 +6,19 @@ import 'PharmacyTab.dart';
 import 'StoresTab.dart';
 
 class HomePage extends StatefulWidget {
+  final String email;
+
+  HomePage({Key key, @required this.email}) : super(key: key);
+
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(email: email);
 }
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  String email;
+
+  _HomePageState({Key key, @required this.email});
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -34,19 +41,24 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Nattupedika'),
+          title: const Text('Nattupeedikaa'),
         ),
         drawer: Drawer(
           child: ListView(
             children: <Widget>[
               DrawerHeader(
                 decoration: BoxDecoration(
-                  color: Colors.lime,
+                  color: Colors.green,
                 ),
                 child: Center(
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage("images/emergency_avatar.jpg"),
-                    radius: 60.0,
+                  child: Column(
+                    children: <Widget>[
+                      CircleAvatar(
+                        backgroundImage: AssetImage("images/emergency_avatar.jpg"),
+                        radius: 60.0,
+                      ),
+                      Text(email),
+                    ],
                   ),
                 ),
               ),
@@ -72,10 +84,10 @@ class _HomePageState extends State<HomePage> {
         body: _widgetOptions[_selectedIndex],
         bottomNavigationBar: Theme(
           data: Theme.of(context).copyWith(
-            canvasColor: Colors.lime,
+            canvasColor: Colors.green,
           ),
           child: BottomNavigationBar(
-            backgroundColor: Colors.lime,
+            backgroundColor: Colors.green,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.store),

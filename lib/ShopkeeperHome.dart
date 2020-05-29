@@ -15,14 +15,14 @@ class _HomePageState extends State<ShopkeeperHomePage> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            title: const Text('Nattupedika'),
+            title: const Text('Nattupeedikaa'),
           ),
           drawer: Drawer(
             child: ListView(
               children: <Widget>[
                 DrawerHeader(
                   decoration: BoxDecoration(
-                    color: Colors.lime,
+                    color: Colors.green,
                   ),
                   child: Center(
                     child: CircleAvatar(
