@@ -3,30 +3,35 @@ import 'package:flutter/material.dart';
 import 'Loading.dart';
 
 class Chat extends StatelessWidget {
-  final String shopId;
+  final String shopName;
 
-  Chat({Key key, @required this.shopId}) : super(key: key);
+  Chat({Key key, @required this.shopName}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("StoreName"),
+          title: Text(shopName),
           leading: Icon(Icons.arrow_back),
         ),
-        body: ChatScreen(shopId: shopId,),
+        body: ChatScreen(
+          shopName: shopName,
+        ),
       ),
     );
   }
 }
 
 class ChatScreen extends StatefulWidget {
-  final String shopId;
+  final String shopName;
 
-  ChatScreen({Key key, @required this.shopId,}) : super(key: key);
+  ChatScreen({
+    Key key,
+    @required this.shopName,
+  }) : super(key: key);
   @override
-  State createState()  => ChatScreenState(shopId: shopId);
+  State createState() => ChatScreenState(shopId: shopName);
 }
 
 class ChatScreenState extends State<ChatScreen> {
@@ -47,23 +52,22 @@ class ChatScreenState extends State<ChatScreen> {
   final ScrollController listScrollController = ScrollController();
   final FocusNode focusNode = FocusNode();
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                buildListMessage(),// List of messages
-                buildInput(), // Input content
-              ],
-            ),
-            // Loading
-            //_buildLoading()
-          ],
-        ),
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              buildListMessage(), // List of messages
+              buildInput(), // Input content
+            ],
+          ),
+          // Loading
+          //_buildLoading()
+        ],
+      ),
     );
   }
 
@@ -72,17 +76,22 @@ class ChatScreenState extends State<ChatScreen> {
       child: isLoading ? const Loading() : Container(),
     );
   }
+
   buildListMessage() {
-    return Flexible(child:Container(height: MediaQuery.of(context).size.height*0.5,));
+    return Flexible(
+        child: Container(
+      height: MediaQuery.of(context).size.height * 0.5,
+    ));
   }
 
   buildInput() {
-    return  Material(
+    return Material(
       elevation: 5.0,
       child: Container(
         child: Row(
           children: <Widget>[
-            Material(                                 // Button send image
+            Material(
+              // Button send image
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 1.0),
                 child: IconButton(
@@ -93,7 +102,8 @@ class ChatScreenState extends State<ChatScreen> {
               ),
               color: Colors.white,
             ),
-            Flexible(                                 // field to type message
+            Flexible(
+              // field to type message
               child: Container(
                 child: TextField(
                   style: TextStyle(color: Colors.black, fontSize: 15.0),
@@ -110,14 +120,17 @@ class ChatScreenState extends State<ChatScreen> {
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 1.0),
                 child: IconButton(
-                  icon: Icon(Icons.camera_alt,),
+                  icon: Icon(
+                    Icons.camera_alt,
+                  ),
                   color: Colors.black,
                   onPressed: null,
                 ),
               ),
               color: Colors.white,
             ),
-            Material(                         // Button send message
+            Material(
+              // Button send message
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 8.0),
                 child: IconButton(
@@ -132,10 +145,11 @@ class ChatScreenState extends State<ChatScreen> {
         ),
         width: double.infinity,
         height: 50.0,
-        decoration: BoxDecoration(border: Border(top: BorderSide(color: Color(0xffE8E8E8), width: 0.5)), color: Colors.white),
+        decoration: BoxDecoration(
+            border:
+                Border(top: BorderSide(color: Color(0xffE8E8E8), width: 0.5)),
+            color: Colors.white),
       ),
     );
   }
-
 }
-
