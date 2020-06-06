@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nattupedika/services/auth.dart';
 
 class ShopkeeperHomePage extends StatefulWidget {
   @override
@@ -6,6 +9,8 @@ class ShopkeeperHomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<ShopkeeperHomePage> {
+  final AuthService _auth = AuthService();
+
   final String shopClose = "Close";
   final String shopOpen = "Open";
 
@@ -57,6 +62,13 @@ class _HomePageState extends State<ShopkeeperHomePage> {
                       title: Text("Settings"),
                       leading: Icon(Icons.settings),
                     ),
+                    ListTile(
+                      title: Text("Log Out"),
+                      leading: Icon(Icons.power_settings_new),
+                      onTap: () async {
+                        await _auth.signOut();
+                      },
+                    ),
                   ],
                 )
               ],
@@ -65,7 +77,23 @@ class _HomePageState extends State<ShopkeeperHomePage> {
           body: Container(
             height: MediaQuery.of(context).size.height,
             child: Center(
-              child: Text("No Orders Yet"),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    height: 300,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: SvgPicture.asset("images/no_chats.svg"),
+                  ),
+                  Text(
+                    "No Orders Yet",
+                    style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontSize: 18.0,
+                        color: Colors.grey),
+                  ),
+                ],
+              ),
             ),
           )),
     );
