@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:nattupedika/services/auth.dart';
 
 import 'EmergencyTab.dart';
 import 'HealthcareTab.dart';
 import 'PharmacyTab.dart';
 import 'StoresTab.dart';
 
-class HomePage extends StatefulWidget {
+class CustomerHomePage extends StatefulWidget {
   final String email;
 
-  HomePage({Key key, @required this.email}) : super(key: key);
+  CustomerHomePage({Key key, @required this.email}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState(email: email);
+  _CustomerHomePageState createState() => _CustomerHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _CustomerHomePageState extends State<CustomerHomePage> {
   int _selectedIndex = 0;
-  String email;
-
-  _HomePageState({Key key, @required this.email});
+  final AuthService _auth=AuthService();
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -38,6 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    String email=widget.email;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -75,6 +75,13 @@ class _HomePageState extends State<HomePage> {
                   ListTile(
                     title:Text("Settings"),
                     leading:Icon(Icons.settings) ,
+                  ),
+                  ListTile(
+                    title:Text("Log Out"),
+                    leading:Icon(Icons.power_settings_new) ,
+                    onTap: ()async{
+                      await _auth.signOut();
+                    },
                   ),
                 ],
               )
