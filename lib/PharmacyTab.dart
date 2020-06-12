@@ -33,6 +33,7 @@ class Pharmacy extends StatelessWidget {
                                       timing: snapshot
                                           .data.documents[index]['closingTime']
                                           .toString(),
+                                          peerId: snapshot.data.documents[index]['uid'],
                                     )),
                           );
                         },

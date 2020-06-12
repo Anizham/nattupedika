@@ -6,12 +6,14 @@ class DetailedPage extends StatelessWidget {
   final String phoneNo;
   final String timing;
   final String shopName;
+  final String peerId;
   DetailedPage({
     Key key,
     @required this.shopName,
     @required this.address,
     @required this.timing,
     @required this.phoneNo,
+    @required this.peerId
   }) : super(key: key);
 
   @override
@@ -32,6 +34,7 @@ class DetailedPage extends StatelessWidget {
               Icons.arrow_back,
               color: Colors.white,
             ),
+            onPressed: (){},
           ),
         ),
         body: SingleChildScrollView(
@@ -74,7 +77,7 @@ class DetailedPage extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => Chat(
-                        shopName: shopName,
+                    peerId: peerId,
                       )),
             );
           },

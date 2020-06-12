@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nattupedika/Authentication/SignIn.dart';
 import 'package:nattupedika/RootPage.dart';
 import 'package:nattupedika/services/auth.dart';
 import 'package:nattupedika/user.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/svg.dart';
 
 
 void main() => runApp(MyApp());
@@ -20,8 +20,44 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.green,
             ),
-            home: RootPage(),
+            home: SplashScreen(),
       ),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed
+    (
+      Duration(seconds: 3),
+      ()
+      {
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>RootPage()));
+      }
+    );
+  }
+  @override
+  Widget build(BuildContext context) {
+    return  Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("images/bg.jpg"), fit: BoxFit.cover)
+                ),
+                child: Center(
+                  child:Container(
+                        height: 300.0,
+                        child: SvgPicture.asset(
+                          "images/text.svg",
+                          color: Colors.green,
+                        )),),
     );
   }
 }
