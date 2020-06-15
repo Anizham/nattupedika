@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:nattupedika/DetaildPage.dart';
+import 'file:///E:/covid/nattupedika/lib/Screens/DetaildPage.dart';
 import 'package:nattupedika/Loading.dart';
 
 class Stores extends StatelessWidget {

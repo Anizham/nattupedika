@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:nattupedika/CustomerHome.dart';
+import 'file:///E:/covid/nattupedika/lib/Screens/CustomerHome.dart';
 
-import '../ShopkeeperHome.dart';
+import '../Screens/ShopkeeperHome.dart';
 import '../user.dart';
 
 class AuthService{
@@ -76,9 +76,15 @@ class AuthService{
                         FirebaseUser user = result.user;
 
                         if(user != null){
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => CustomerHomePage(email: "sas",)
-                          ));
+                          if(userType=="customer"){
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context)=>CustomerHomePage(email:"vpsines@gmail.com",)
+                            ));
+                          }else{
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context)=>ShopkeeperHomePage()
+                            ));
+                          }
                         }else{
                           print("Error");
                         }

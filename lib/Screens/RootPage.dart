@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nattupedika/CustomerHome.dart';
 import 'package:nattupedika/user.dart';
 import 'package:provider/provider.dart';
 
-import 'Authentication/UserType.dart';
+import '../Authentication/UserType.dart';
+import 'CustomerHome.dart';
 
 class RootPage extends StatelessWidget {
   @override
@@ -13,7 +13,7 @@ class RootPage extends StatelessWidget {
     if (user == null) {
       return UserType();
     } else {
-      return CustomerHomePage(email:user.uid);
+        return CustomerHomePage(email:user.uid);
     }
   }
 }

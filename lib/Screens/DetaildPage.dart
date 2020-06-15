@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nattupedika/Chat.dart';
+import 'file:///E:/covid/nattupedika/lib/Screens/Chat.dart';
 
 class DetailedPage extends StatelessWidget {
   final String address;
