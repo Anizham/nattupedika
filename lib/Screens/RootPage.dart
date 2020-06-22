@@ -13,7 +13,7 @@ class RootPage extends StatelessWidget {
     if (user == null) {
       return UserType();
     } else {
-        return CustomerHomePage(email:user.uid);
+        return CustomerHomePage(user: user,);
     }
   }
 }

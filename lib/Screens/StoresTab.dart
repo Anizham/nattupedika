@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'file:///E:/covid/nattupedika/lib/Screens/DetaildPage.dart';
 import 'package:nattupedika/Loading.dart';
+import 'package:nattupedika/services/url.dart';
 
 class Stores extends StatelessWidget {
+  final UrlLauncher _urlLauncher = UrlLauncher();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +42,13 @@ class Stores extends StatelessWidget {
                           backgroundImage: AssetImage("images/shop.jpg"),
                           radius: 30.0,
                         ),
-                        trailing: Icon(Icons.call),
+                        trailing: new IconButton(
+                            icon: Icon(Icons.call),
+                            onPressed: () {
+                              Future<void> _launched = _urlLauncher
+                                  .makePhoneCall(snapshot.data.documents[index]
+                              ['phoneNo']);
+                            }),
                         title: Text(snapshot.data.documents[index]['name']),
                         subtitle: Wrap(
                           direction: Axis.vertical,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nattupedika/Authentication/SignUpPage.dart';
 import 'package:nattupedika/Loading.dart';
+import 'package:nattupedika/Screens/CustomerHome.dart';
 import 'package:nattupedika/services/auth.dart';
 
 class CustomerSignInPage extends StatefulWidget {
@@ -115,16 +116,13 @@ class _SignInState extends State<CustomerSignInPage> {
                           ),
                         ),
                         SizedBox(
-                          height: 60.0,
+                          height: 50.0,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10.0),
                           child: OutlineButton(
                             splashColor: Colors.grey,
                             onPressed: () async{
-                                setState(() {
-                                  loading=true;
-                                });
                                 dynamic result=await _auth.signInWithGoogle();
                                 if(result==null){
                                   setState(() {
@@ -132,6 +130,10 @@ class _SignInState extends State<CustomerSignInPage> {
                                     error='Please supply valid email';
                                     print(error);
                                   });
+                                }else{
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (context)=>CustomerHomePage(user: result,)
+                                  ));
                                 }
                             },
                             shape: RoundedRectangleBorder(
