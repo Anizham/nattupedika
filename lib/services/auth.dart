@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'file:///E:/covid/nattupedika/lib/Screens/CustomerHome.dart';
+import 'package:nattupedika/Screens/CustomerHome.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Screens/ShopkeeperHome.dart';
 import '../user.dart';
@@ -11,6 +12,7 @@ class AuthService{
   final _codeController=TextEditingController();
 
   final FirebaseAuth _auth= FirebaseAuth.instance;
+  SharedPreferences prefs;
 
   User _userFromFirebaseUser(FirebaseUser user){
     return user!=null ? User(uid:user.uid):null;
@@ -44,7 +46,7 @@ class AuthService{
           }
         },
         verificationFailed: (AuthException e){
-          print(e.toString());
+          print(e.message.toString());
           return false;
         },
         codeSent: (String verificationId, [int forceResendingToken]){
@@ -74,7 +76,8 @@ class AuthService{
                         AuthResult result = await _auth.signInWithCredential(credential);
 
                         FirebaseUser user = result.user;
-
+                        prefs = await SharedPreferences.getInstance();
+                        await prefs.setString('id',user.uid);
                         if(user != null){
                           if(userType=="customer"){
                             Navigator.push(context, MaterialPageRoute(
@@ -114,6 +117,33 @@ class AuthService{
         return _userFromFirebaseUser(result.user);
     }catch(e){
       print(e.toString());
+      return null;
+    }
+  }
+  Future<bool> signUpWithEmail(String email, String password) async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    try {
+      AuthResult result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      FirebaseUser user = result.user;
+      // Firestore.instance.collection("user").document(user.uid).setData({"username":_nameController.text,"id":user.uid,"chattingwith":null});
+      if(user!=null) return null;
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<FirebaseUser> signInWithEmail(String email,String password) async{
+    FirebaseAuth _auth=FirebaseAuth.instance;
+
+    try{
+      AuthResult result =await _auth.signInWithEmailAndPassword(email: email, password: password);
+      FirebaseUser user =result.user;
+      return user;
+    }catch(e){
+      print(e.message.toString());
       return null;
     }
   }

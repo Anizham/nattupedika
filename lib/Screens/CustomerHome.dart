@@ -12,10 +12,12 @@ class CustomerHomePage extends StatefulWidget {
   CustomerHomePage({Key key, @required this.email}) : super(key: key);
 
   @override
-  _CustomerHomePageState createState() => _CustomerHomePageState();
+  _CustomerHomePageState createState() => _CustomerHomePageState(email:email);
 }
 
 class _CustomerHomePageState extends State<CustomerHomePage> {
+ _CustomerHomePageState({Key key, @required this.email});
+   final String email;
   int _selectedIndex = 0;
   final AuthService _auth=AuthService();
 
@@ -37,7 +39,6 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    String email=widget.email;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(

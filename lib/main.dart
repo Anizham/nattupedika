@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'file:///E:/covid/nattupedika/lib/Screens/RootPage.dart';
+import 'package:nattupedika/Screens/RootPage.dart';
 import 'package:nattupedika/services/auth.dart';
 import 'package:nattupedika/user.dart';
 import 'package:provider/provider.dart';

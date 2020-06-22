@@ -117,6 +117,7 @@ class ChatScreen1State extends State<ChatScreen1> {
           },
         );
       });
+      Firestore.instance.collection(peerId).add({'username':null});
       listScrollController.animateTo(0.0,
           duration: Duration(milliseconds: 300), curve: Curves.easeOut);
     } else {

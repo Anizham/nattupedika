@@ -1,20 +1,26 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nattupedika/Loading.dart';
+import 'package:nattupedika/Screens/ShopkeeperHome.dart';
 import 'package:nattupedika/services/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ShopkeeperSignInPage extends StatefulWidget {
 //  final String userType;
 //  ShopkeeperSignInPage({Key key, @required this.userType}) : super(key: key);
-
   @override
   _SignInState createState() => _SignInState();
 }
 
 class _SignInState extends State<ShopkeeperSignInPage> {
-  String _phoneNo = "";
+  String password = "";
+  String email = "";
   String error = "";
   String _userType = "shopkeeper";
+  String cid = '';
+
+  SharedPreferences prefs;
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
@@ -45,28 +51,69 @@ class _SignInState extends State<ShopkeeperSignInPage> {
                           key: _formKey,
                           child: Column(
                             children: <Widget>[
-                              SizedBox(height: 10.0),
+                              // SizedBox(height: 10.0),
+                              // TextFormField(
+                              //   onChanged: (val) {
+                              //     setState(() {
+                              //       _phoneNo = val;
+                              //     });
+                              //   },
+                              //   validator: (val) {
+                              //     if (val.isEmpty) return "*Enter Phone No.";
+                              //     return null;
+                              //   },
+                              //   decoration: InputDecoration(
+                              //       icon: Icon(Icons.phone_android),
+                              //       labelText: 'Phone No. ',
+                              //       labelStyle: TextStyle(
+                              //           fontFamily: 'Montserrat',
+                              //           fontWeight: FontWeight.bold,
+                              //           color: Colors.grey),
+                              //       focusedBorder: UnderlineInputBorder(
+                              //           borderSide:
+                              //               BorderSide(color: Colors.green))),
+                              // ),
                               TextFormField(
-                                onChanged: (val) {
-                                  setState(() {
-                                    _phoneNo = val;
-                                  });
-                                },
-                                validator: (val) {
-                                  if (val.isEmpty) return "*Enter Phone No.";
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                    icon: Icon(Icons.phone_android),
-                                    labelText: 'Phone No. ',
-                                    labelStyle: TextStyle(
-                                        fontFamily: 'Montserrat',
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.green))),
-                              ),
+                              validator: (val)=>val.isEmpty?"*Enter Email":null,
+                              keyboardType: TextInputType.emailAddress,
+                              onChanged: (val) {
+                                setState(() {
+                                  email = val;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                  labelText: 'Email',
+                                  icon: Icon(Icons.email),
+                                  labelStyle: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey),
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.green))),
+                            ),
+                            SizedBox(height: 10.0),
+                            TextFormField(
+                              obscureText: true,
+                              validator: (val){
+                                if(val.length<6) return "*Invalid Password";
+                                return null;
+                              },
+                              onChanged: (val) {
+                                setState(() {
+                                  password = val;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  icon: Icon(Icons.phone_android),
+                                  labelStyle: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey),
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.green))),
+                            ),
+
                               SizedBox(height: 50.0),
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.75,
@@ -75,10 +122,21 @@ class _SignInState extends State<ShopkeeperSignInPage> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20.0),
                                   ),
-                                  onPressed: () {
+                                  onPressed: ()  async{
                                     if (_formKey.currentState.validate()) {
-                                      _auth.signInWithPhoneNo(
-                                          _phoneNo, context, _userType);
+                                    FirebaseUser user= await _auth.signInWithEmail(email, password);
+                                    // currentuser =user;
+                                    cid = user.uid;
+                                     if(user!=null)
+                                     {
+                                      // prefs = await SharedPreferences.getInstance();
+                                      // await prefs.setString('id',user.uid);
+
+                                      Navigator.push(context, MaterialPageRoute(
+                                      builder: (context)=>ShopkeeperHomePage(cid: cid,)
+                                      ));
+                                     }
+                                       
                                     }
                                   },
                                   child: Text(
