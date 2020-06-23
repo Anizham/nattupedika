@@ -78,6 +78,7 @@ class AuthService{
                         FirebaseUser user = result.user;
                         prefs = await SharedPreferences.getInstance();
                         await prefs.setString('id',user.uid);
+                        print(user.uid);
                         if(user != null){
                           if(userType=="customer"){
                             Navigator.push(context, MaterialPageRoute(
@@ -112,11 +113,10 @@ class AuthService{
         AuthResult result= await _auth.signInWithCredential(GoogleAuthProvider.getCredential(
             idToken: (await account.authentication).idToken,
             accessToken: (await account.authentication).accessToken));
-
         if(result.user!=null) return null;
         return _userFromFirebaseUser(result.user);
     }catch(e){
-      print(e.toString());
+      print(e.message.toString());
       return null;
     }
   }

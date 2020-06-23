@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:nattupedika/user.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Chat extends StatelessWidget {
   final String peerId;
+  
 
   Chat({Key key, @required this.peerId}) : super(key: key);
 
@@ -60,7 +63,7 @@ class ChatScreen1State extends State<ChatScreen1> {
 
   readLocal() async {
     prefs = await SharedPreferences.getInstance();
-    id = prefs.getString('id') ?? '';
+    id = prefs.getString('id') ?? 'sVrdNTvY08dPx2K8EC1TLY0qcOE2';
     if (id.hashCode <= peerId.hashCode) {
       groupChatId = '$id-$peerId';
     } else {
@@ -117,7 +120,7 @@ class ChatScreen1State extends State<ChatScreen1> {
           },
         );
       });
-      Firestore.instance.collection(peerId).add({'username':null});
+      Firestore.instance.collection('trial').document(peerId).collection('userchats').document(id).setData({'username':peerId,'uid':id});
       listScrollController.animateTo(0.0,
           duration: Duration(milliseconds: 300), curve: Curves.easeOut);
     } else {

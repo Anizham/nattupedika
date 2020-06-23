@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nattupedika/Authentication/SignUpPage.dart';
 import 'package:nattupedika/Loading.dart';
 import 'package:nattupedika/services/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerSignInPage extends StatefulWidget {
   @override
@@ -13,10 +14,12 @@ class _SignInState extends State<CustomerSignInPage> {
   String _phoneNo = "";
   String error = "";
   String _userType="customer";
+  String name = "";
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   bool loading=false;
+   SharedPreferences prefs;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +43,6 @@ class _SignInState extends State<CustomerSignInPage> {
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
-                        SizedBox(height: 10.0),
                         TextFormField(
                           onChanged: (val) {
                             setState(() {
@@ -69,7 +71,7 @@ class _SignInState extends State<CustomerSignInPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),
-                            onPressed: () {
+                            onPressed: () async{
                               if (_formKey.currentState.validate()) {
                                 _auth.signInWithPhoneNo(_phoneNo, context,_userType);
                               }

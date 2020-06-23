@@ -1,11 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nattupedika/services/auth.dart';
+import 'package:nattupedika/user.dart';
+import 'package:provider/provider.dart';
 
 import '../Loading.dart';
 
 class SignUpPage extends StatefulWidget {
   final String userType;
+  
   SignUpPage({Key key, @required this.userType}) : super(key: key);
 
   @override
@@ -15,13 +19,15 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final AuthService _auth = AuthService();
   final _formKey= GlobalKey<FormState>();
-
   bool loading=false;
-
   String email = '';
   String phoneNo = '';
   String name = '';
   String error="";
+  adduserdata(final user,String name,String email)
+  {
+    Firestore.instance.collection('userdata').document(user.uid).setData({'username':name,'email':email});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 if(val.length<10||val.length>13) return "*Invalid Phone No.";
                                 return null;
                               },
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.text,
                               onChanged: (val) {
                                 setState(() {
                                   phoneNo = val;
@@ -117,7 +123,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     setState(() {
                                       loading=true;
                                     });
-                                    dynamic result=_auth.signInWithPhoneNo(phoneNo, context, widget.userType);
+                                    dynamic result=_auth.signInWithPhoneNo(phoneNo, context, widget.userType);                                                          
                                     if(result==false){
                                       setState(() {
                                         loading=false;
