@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nattupedika/services/auth.dart';
+import 'package:nattupedika/user.dart';
 
 import 'EmergencyTab.dart';
 import 'HealthcareTab.dart';
@@ -7,9 +8,9 @@ import 'PharmacyTab.dart';
 import 'StoresTab.dart';
 
 class CustomerHomePage extends StatefulWidget {
-  final String email;
+  final User user;
 
-  CustomerHomePage({Key key, @required this.email}) : super(key: key);
+  CustomerHomePage({Key key, @required this.user}) : super(key: key);
 
   @override
   _CustomerHomePageState createState() => _CustomerHomePageState();
@@ -37,7 +38,6 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    String email=widget.email;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -55,9 +55,9 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                     children: <Widget>[
                       CircleAvatar(
                         backgroundImage: AssetImage("images/emergency_avatar.jpg"),
-                        radius: 60.0,
+                        radius: 50.0,
                       ),
-                      Text(email),
+                      Text("UserName"),
                     ],
                   ),
                 ),

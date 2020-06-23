@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nattupedika/RootPage.dart';
+import 'file:///E:/covid/nattupedika/lib/Screens/RootPage.dart';
 import 'package:nattupedika/services/auth.dart';
 import 'package:nattupedika/user.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<User>.value(
+      catchError: (_, __) => null,
       value: AuthService().user,
       child: MaterialApp(
             debugShowCheckedModeBanner: false,

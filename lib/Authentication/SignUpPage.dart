@@ -114,9 +114,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                                 onPressed: () async{
                                   if(_formKey.currentState.validate()){
-                                    setState(() {
-                                      loading=true;
-                                    });
                                     dynamic result=_auth.signInWithPhoneNo(phoneNo, context, widget.userType);
                                     if(result==false){
                                       setState(() {

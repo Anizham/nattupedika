@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nattupedika/Authentication/SignUpPage.dart';
 import 'package:nattupedika/Loading.dart';
+import 'package:nattupedika/Screens/CustomerHome.dart';
 import 'package:nattupedika/services/auth.dart';
 
-class SignInPage extends StatefulWidget {
-  final String userType;
-  SignInPage({Key key, @required this.userType}) : super(key: key);
-
+class CustomerSignInPage extends StatefulWidget {
   @override
   _SignInState createState() => _SignInState();
 }
 
-class _SignInState extends State<SignInPage> {
+class _SignInState extends State<CustomerSignInPage> {
   String _phoneNo = "";
   String error = "";
+  String _userType="customer";
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
@@ -73,15 +72,7 @@ class _SignInState extends State<SignInPage> {
                             ),
                             onPressed: () {
                               if (_formKey.currentState.validate()) {
-                                setState(() {
-                                  loading=true;
-                                });
-                                dynamic result=_auth.signInWithPhoneNo(_phoneNo, context,widget.userType);
-                                if(result==false){
-                                  setState(() {
-                                    loading=false;
-                                  });
-                                }
+                                _auth.signInWithPhoneNo(_phoneNo, context,_userType);
                               }
                             },
                             child: Text(
@@ -98,9 +89,7 @@ class _SignInState extends State<SignInPage> {
                           onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SignUpPage(
-                                        userType: widget.userType,
-                                      ))),
+                                  builder: (context) => SignUpPage(userType: _userType,))),
                           child: RichText(
                             text: TextSpan(
                               children: [
@@ -127,16 +116,13 @@ class _SignInState extends State<SignInPage> {
                           ),
                         ),
                         SizedBox(
-                          height: 60.0,
+                          height: 50.0,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10.0),
                           child: OutlineButton(
                             splashColor: Colors.grey,
                             onPressed: () async{
-                                setState(() {
-                                  loading=true;
-                                });
                                 dynamic result=await _auth.signInWithGoogle();
                                 if(result==null){
                                   setState(() {
@@ -144,6 +130,10 @@ class _SignInState extends State<SignInPage> {
                                     error='Please supply valid email';
                                     print(error);
                                   });
+                                }else{
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (context)=>CustomerHomePage(user: result,)
+                                  ));
                                 }
                             },
                             shape: RoundedRectangleBorder(

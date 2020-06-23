@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nattupedika/Loading.dart';
+import 'package:nattupedika/services/url.dart';
 
 class Emergency extends StatelessWidget {
+  final UrlLauncher _urlLauncher = UrlLauncher();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
-          stream:
-              Firestore.instance.collection('emergency_call_data').snapshots(),
+          stream: Firestore.instance.collection('emergency_data').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return Loading();
             return ListView.builder(
@@ -24,10 +25,16 @@ class Emergency extends StatelessWidget {
                           radius: 30.0,
                           backgroundColor: Colors.black,
                         ),
-                        trailing: Icon(Icons.call),
+                        trailing: new IconButton(
+                            icon: Icon(Icons.call),
+                            onPressed: () {
+                              Future<void> _launched = _urlLauncher
+                                  .makePhoneCall(snapshot.data.documents[index]
+                                      ['phoneNo']);
+                            }),
                         title: Text(snapshot.data.documents[index]['name']),
                         subtitle:
-                            Text(snapshot.data.documents[index]['resignation']),
+                            Text(snapshot.data.documents[index]['phoneNo']),
                       ),
                     ),
                   );

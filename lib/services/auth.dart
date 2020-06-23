@@ -1,15 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:nattupedika/CustomerHome.dart';
+import 'file:///E:/covid/nattupedika/lib/Screens/CustomerHome.dart';
 
-import '../ShopkeeperHome.dart';
+import '../Screens/ShopkeeperHome.dart';
 import '../user.dart';
 
 class AuthService{
 
   final _codeController=TextEditingController();
 
+  final GoogleSignIn _googleSignIn =GoogleSignIn();
   final FirebaseAuth _auth= FirebaseAuth.instance;
 
   User _userFromFirebaseUser(FirebaseUser user){
@@ -34,7 +35,7 @@ class AuthService{
           if(user!=null){
             if(userType=="customer"){
               Navigator.push(context, MaterialPageRoute(
-                  builder: (context)=>CustomerHomePage(email:"vpsines@gmail.com",)
+                  builder: (context)=>CustomerHomePage(user: user,)
               ));
             }else{
               Navigator.push(context, MaterialPageRoute(
@@ -76,9 +77,15 @@ class AuthService{
                         FirebaseUser user = result.user;
 
                         if(user != null){
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => CustomerHomePage(email: "sas",)
-                          ));
+                          if(userType=="customer"){
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context)=>CustomerHomePage(user: _userFromFirebaseUser(user),)
+                            ));
+                          }else{
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context)=>ShopkeeperHomePage()
+                            ));
+                          }
                         }else{
                           print("Error");
                         }
@@ -95,8 +102,7 @@ class AuthService{
 
   Future<User> signInWithGoogle() async{
     try{
-        GoogleSignIn googleSignIn =GoogleSignIn();
-        GoogleSignInAccount account=await googleSignIn.signIn();
+        GoogleSignInAccount account=await _googleSignIn.signIn();
 
         if(account==null) return null;
 
@@ -114,6 +120,9 @@ class AuthService{
 
   Future signOut() async{
     try{
+      if(await _googleSignIn.isSignedIn()){
+        return await _googleSignIn.signOut();
+      }
       return await _auth.signOut();
     }catch(e){
       print(e.toString());

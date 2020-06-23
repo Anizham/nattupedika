@@ -124,23 +124,103 @@ class ChatScreen1State extends State<ChatScreen1> {
     }
   }
 
+//  Widget buildItem(int index, DocumentSnapshot document) {
+//    if (document['idFrom'] == id) {
+//      // Right (my message)
+//      return Row(
+//        children: <Widget>[
+//          Container(
+//            child: Text(
+//              document['content'],
+//              style: TextStyle(color: Colors.white),
+//            ),
+//            padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+//            width: 200.0,
+//            decoration: BoxDecoration(
+//                color: Colors.grey, borderRadius: BorderRadius.circular(8.0)),
+//            margin: EdgeInsets.only(
+//                bottom: isLastMessageRight(index) ? 20.0 : 10.0, right: 10.0),
+//          )
+//        ],
+//        mainAxisAlignment: MainAxisAlignment.end,
+//      );
+//    } else {
+//      // Left (peer message)
+//      return Container(
+//        child: Column(
+//          children: <Widget>[
+//            Row(
+//              children: <Widget>[
+//                Container(
+//                  child: Text(
+//                    document['content'],
+//                    style: TextStyle(color: Colors.white),
+//                  ),
+//                  padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+//                  width: 200.0,
+//                  decoration: BoxDecoration(
+//                      color: Colors.green,
+//                      borderRadius: BorderRadius.circular(8.0)),
+//                  margin: EdgeInsets.only(left: 10.0),
+//                ),
+//              ],
+//            ),
+//          ],
+//          crossAxisAlignment: CrossAxisAlignment.start,
+//        ),
+//        margin: EdgeInsets.only(bottom: 10.0),
+//      );
+//    }
+//  }
+
   Widget buildItem(int index, DocumentSnapshot document) {
     if (document['idFrom'] == id) {
       // Right (my message)
       return Row(
         children: <Widget>[
-          Container(
+          document['type'] == 0
+          // Text
+              ? Container(
             child: Text(
               document['content'],
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black),
             ),
             padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
             width: 200.0,
             decoration: BoxDecoration(
-                color: Colors.grey, borderRadius: BorderRadius.circular(8.0)),
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(8.0)),
             margin: EdgeInsets.only(
-                bottom: isLastMessageRight(index) ? 20.0 : 10.0, right: 10.0),
+                bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                right: 10.0),
           )
+              : document['type'] == 2
+              ? Container(
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                  leading: Icon(Icons.shopping_cart),
+                  title: Text("Order"),
+                ),
+                Divider(
+                  color: Colors.black,
+                ),
+                Text(
+                  document['content'],
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+            width: 200.0,
+            decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(10.0)),
+            margin: EdgeInsets.only(
+                bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                right: 10.0),
+          )
+              : Container(),
         ],
         mainAxisAlignment: MainAxisAlignment.end,
       );
@@ -149,22 +229,56 @@ class ChatScreen1State extends State<ChatScreen1> {
       return Container(
         child: Column(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    document['content'],
-                    style: TextStyle(color: Colors.white),
+            document['type'] == 0
+            // Text
+                ? Container(
+              child: Text(
+                document['content'],
+                style: TextStyle(color: Colors.black),
+              ),
+              padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+              width: 200.0,
+              decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(8.0)),
+              margin: EdgeInsets.only(
+                  bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                  right: 10.0),
+            )
+                : document['type'] == 2
+                ? Container(
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.shopping_cart),
+                    title: Text("Order"),
                   ),
-                  padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-                  width: 200.0,
-                  decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(8.0)),
-                  margin: EdgeInsets.only(left: 10.0),
-                ),
-              ],
-            ),
+                  Divider(
+                    color: Colors.black,
+                  ),
+                  Text(
+                    document['content'],
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      print("Order Ready");
+                    },
+                    child: Text('Order Ready'),
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+              padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+              width: 200.0,
+              decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(10.0)),
+              margin: EdgeInsets.only(
+                  bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                  right: 10.0),
+            )
+                : Container(),
           ],
           crossAxisAlignment: CrossAxisAlignment.start,
         ),
@@ -237,6 +351,18 @@ class ChatScreen1State extends State<ChatScreen1> {
     return Container(
       child: Row(
         children: <Widget>[
+          Material(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
+              child: IconButton(
+                icon: Icon(Icons.shopping_cart),
+                onPressed: () => _getOrderDialog(context)
+                    .then((value) => onSendMessage(value, 2)),
+                color: Colors.black,
+              ),
+            ),
+            color: Colors.white,
+          ),
           Flexible(
             child: Container(
               child: TextField(
@@ -305,6 +431,53 @@ class ChatScreen1State extends State<ChatScreen1> {
                 }
               },
             ),
+    );
+  }
+
+  Future<String> _getOrderDialog(BuildContext context) async {
+    TextEditingController controller = TextEditingController();
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Order'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  style: TextStyle(color: Colors.black, fontSize: 15.0),
+                  controller: controller,
+                  decoration: InputDecoration.collapsed(
+                    hintText: 'Enter your order',
+                    hintStyle: TextStyle(color: Colors.green),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('Order'),
+              onPressed: () {
+                if (controller.text == "") {
+                  print("Empty order");
+                } else {
+                  Navigator.of(context).pop(controller.text.toString());
+                }
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

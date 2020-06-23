@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:nattupedika/Authentication/SignIn.dart';
+import 'package:nattupedika/Authentication/ShopkeeperSignIn.dart';
+import 'CustomerSignIn.dart';
 
 class UserType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String userType;
     return SafeArea(
       child: new Scaffold(
           resizeToAvoidBottomPadding: false,
@@ -28,9 +28,8 @@ class UserType extends StatelessWidget {
                   color: Colors.green,
                   child: GestureDetector(
                     onTap: () {
-                      userType="customer";
                       Navigator.push(context,MaterialPageRoute(
-                          builder:(context)=>SignInPage(userType: userType,)));
+                          builder:(context)=>CustomerSignInPage()));
                     },
                     child: Center(
                       child: Text(
@@ -54,9 +53,8 @@ class UserType extends StatelessWidget {
                   color: Colors.green,
                   child: GestureDetector(
                     onTap: () {
-                      userType="shopkeeper";
                       Navigator.push(context,MaterialPageRoute(
-                          builder:(context)=>SignInPage(userType: userType,)));
+                          builder:(context)=>ShopkeeperSignInPage()));
                     },
                     child: Center(
                       child: Text(
