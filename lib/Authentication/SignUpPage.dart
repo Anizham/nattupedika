@@ -2,9 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nattupedika/services/auth.dart';
-import 'package:nattupedika/user.dart';
-import 'package:provider/provider.dart';
-
 import '../Loading.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -24,11 +21,6 @@ class _SignUpPageState extends State<SignUpPage> {
   String phoneNo = '';
   String name = '';
   String error="";
-  adduserdata(final user,String name,String email)
-  {
-    Firestore.instance.collection('userdata').document(user.uid).setData({'username':name,'email':email});
-  }
-
   @override
   Widget build(BuildContext context) {
     return loading ? Loading() : SafeArea(

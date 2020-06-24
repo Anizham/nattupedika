@@ -3,8 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nattupedika/Authentication/SignUpPage.dart';
 import 'package:nattupedika/Loading.dart';
 import 'package:nattupedika/services/auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 class CustomerSignInPage extends StatefulWidget {
   @override
   _SignInState createState() => _SignInState();
@@ -19,7 +17,6 @@ class _SignInState extends State<CustomerSignInPage> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   bool loading=false;
-   SharedPreferences prefs;
 
   @override
   Widget build(BuildContext context) {

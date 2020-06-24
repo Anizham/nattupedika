@@ -4,8 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nattupedika/Loading.dart';
 import 'package:nattupedika/Screens/ShopkeeperHome.dart';
 import 'package:nattupedika/services/auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 class ShopkeeperSignInPage extends StatefulWidget {
 //  final String userType;
 //  ShopkeeperSignInPage({Key key, @required this.userType}) : super(key: key);
@@ -19,9 +17,6 @@ class _SignInState extends State<ShopkeeperSignInPage> {
   String error = "";
   String _userType = "shopkeeper";
   String cid = '';
-
-  SharedPreferences prefs;
-
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
@@ -129,9 +124,6 @@ class _SignInState extends State<ShopkeeperSignInPage> {
                                     cid = user.uid;
                                      if(user!=null)
                                      {
-                                      // prefs = await SharedPreferences.getInstance();
-                                      // await prefs.setString('id',user.uid);
-
                                       Navigator.push(context, MaterialPageRoute(
                                       builder: (context)=>ShopkeeperHomePage(cid: cid,)
                                       ));

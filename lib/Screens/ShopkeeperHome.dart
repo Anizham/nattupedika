@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nattupedika/Screens/Chat.dart';
 import 'package:nattupedika/services/auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 class ShopkeeperHomePage extends StatefulWidget {
   ShopkeeperHomePage({Key key,this.cid}):super(key:key);
   final String cid;
@@ -17,15 +15,10 @@ class _HomePageState extends State<ShopkeeperHomePage> {
    _HomePageState({this.cid});
    final String cid;
   final AuthService _auth = AuthService();
-SharedPreferences prefs;
-   List<Map> values = [];
-   List<Map>  result;
   final String shopClose = "Close";
   final String shopOpen = "Open";
   String id;
-
   
-
    Widget BuildItem(BuildContext context,DocumentSnapshot document)
   {
   
