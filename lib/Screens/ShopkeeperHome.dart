@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,61 +12,84 @@ import 'package:nattupedika/services/notification.dart';
 class ShopkeeperHomePage extends StatefulWidget {
 
   final User user;
-  ShopkeeperHomePage({Key key, @required this.user}) : super(key: key);
+  final String pno1;
+  ShopkeeperHomePage({Key key, @required this.user,this.pno1}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(pno1: pno1);
 }
 
 class _HomePageState extends State<ShopkeeperHomePage> {
-
+  _HomePageState({this.pno1});
+  final String pno1;
   final AuthService _auth = AuthService();
   final NotificationService _notification= NotificationService();
   
   final String shopClose = "Close";
   final String shopOpen = "Open";
+    bool _shopStatus = true;
+    addStatus(String pno,String status) async {
+      final QuerySnapshot snapshot = await Firestore.instance 
+                             .collection('store_data')
+                             .where('pno', isEqualTo:pno1)
+                             .getDocuments();
+            final List<DocumentSnapshot> documents = snapshot.documents;
+            final id = documents[0].documentID;
+            print(pno1);
+            print(id);
+        Firestore.instance.collection('store_data').document(id).updateData({'status':status});
+    }
+
 
   Widget buildItem(BuildContext context, DocumentSnapshot document) {
     {
-      return GestureDetector(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Chat(peerUid: document.data["uid"])));
-        },
-        child: Container(
-          color: Colors.black26,
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      return Container(
+        child: FlatButton(
           child: Row(
-            children: [
-              Container(
+            children: <Widget>[
+             Container(
                 height: 30,
                 width: 30,
                 decoration: BoxDecoration(
                     color: Colors.blue,
-                    borderRadius: BorderRadius.circular(30)),
-                child: Text(document.data["username"].substring(0, 1),
-                    textAlign: TextAlign.center,
+                    borderRadius: BorderRadius.circular(40)),
+                child: Center(
+                  child: Text(document.data["username"].substring(0, 1),
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontFamily: 'OverpassRegular',
                         fontWeight: FontWeight.w300)),
+                ),
               ),
-              SizedBox(
-                width: 12,
+              Flexible(
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        child: Text(
+                          'Username: ${document.data["username"]}'),
+                        alignment: Alignment.centerLeft,
+                        margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
+                      ),
+                    ],
+                  ),
+                  margin: EdgeInsets.only(left: 20.0),
+                ),
               ),
-              Text(document.data["username"],
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontFamily: 'OverpassRegular',
-                      fontWeight: FontWeight.w300))
             ],
           ),
+          onPressed: () {
+             Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Chat(peerUid: document.data["uid"])));
+          },
+          color: Color(0xffE8E8E8),
+          padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
+        margin: EdgeInsets.only(bottom: 10.0, left: 5.0, right: 5.0),
       );
     }
   }
@@ -125,7 +148,7 @@ class _HomePageState extends State<ShopkeeperHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    bool _shopStatus = true;
+  final user = Provider.of<User>(context);    
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
@@ -150,12 +173,23 @@ class _HomePageState extends State<ShopkeeperHomePage> {
                     SwitchListTile(
                       title: Text("Shop:"),
                       subtitle: _shopStatus ? Text(shopOpen) : Text(shopClose),
-                      value: _shopStatus,
                       onChanged: (bool value) {
                         setState(() {
                           _shopStatus = value;
+                          if(_shopStatus == true)
+                          {
+                            print(pno1);
+                            addStatus(pno1, shopOpen); 
+                          }
+                          else
+                          {
+                            print(pno1);
+                            addStatus(pno1, shopClose);
+                          }
                         });
                       },
+                      value: _shopStatus,
+
                       secondary: Icon(Icons.store),
                     ),
                     Divider(),
@@ -231,3 +265,4 @@ class _HomePageState extends State<ShopkeeperHomePage> {
     );
   }
 }
+

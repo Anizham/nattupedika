@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Duration(seconds: 3),
       ()
       {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>RootPage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>RootPage()));
       }
     );
   }

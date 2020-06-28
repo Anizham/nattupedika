@@ -19,6 +19,7 @@ class AuthService {
   User _userFromFirebaseUser(FirebaseUser user) {
     return user != null ? User(uid: user.uid) : null;
   }
+ 
 
   // change user auth stream
   Stream<User> get user {
@@ -44,10 +45,11 @@ class AuthService {
                             user: user,
                           )));
             } else {
+              print(phoneNo);
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ShopkeeperHomePage(user: user,)));
+                      builder: (context) => ShopkeeperHomePage(pno1: phoneNo,user: user,)));
             }
           }
         },
@@ -96,11 +98,12 @@ class AuthService {
                                           user: user,
                                         )));
                           } else {
+                            print(phoneNo);
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        ShopkeeperHomePage(user: user,)));
+                                        ShopkeeperHomePage(pno1: phoneNo,user: user,)));
                           }
                         } else {
                           print("Error");
@@ -164,10 +167,11 @@ class AuthService {
                         user: user,
                       )));
             } else {
+              print(phoneNo);
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ShopkeeperHomePage(user: user,)));
+                      builder: (context) => ShopkeeperHomePage(pno1: phoneNo,user: user,)));
             }
           } else {
             print("error");
@@ -238,11 +242,12 @@ class AuthService {
                                             user: user,
                                           )));
                             } else {
+                              print(phoneNo);
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          ShopkeeperHomePage(user: user,)));
+                                          ShopkeeperHomePage(pno1: phoneNo,user: user,)));
                             }
                           } else {
                             print("User already exists");
