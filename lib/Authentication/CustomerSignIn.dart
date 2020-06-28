@@ -124,11 +124,11 @@ class _SignInState extends State<CustomerSignInPage> {
                                 setState(() {
                                   loading=true;
                                 });
-                                dynamic result=await _auth.signInWithGoogle();
-                                if(result==null){
+                                dynamic result=await _auth.signInWithGoogle(_userType,context);
+                                if(result==false){
                                   setState(() {
                                     loading=false;
-                                    error='Please supply valid email';
+                                    error='Authentication failed';
                                     print(error);
                                   });
                                 }

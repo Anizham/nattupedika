@@ -1,22 +1,18 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nattupedika/Loading.dart';
-import 'package:nattupedika/Screens/ShopkeeperHome.dart';
 import 'package:nattupedika/services/auth.dart';
+
 class ShopkeeperSignInPage extends StatefulWidget {
-//  final String userType;
-//  ShopkeeperSignInPage({Key key, @required this.userType}) : super(key: key);
   @override
   _SignInState createState() => _SignInState();
 }
 
 class _SignInState extends State<ShopkeeperSignInPage> {
-  String password = "";
-  String email = "";
+
+  String _phoneNo = "";
   String error = "";
   String _userType = "shopkeeper";
-  String cid = '';
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
@@ -46,69 +42,28 @@ class _SignInState extends State<ShopkeeperSignInPage> {
                           key: _formKey,
                           child: Column(
                             children: <Widget>[
-                              // SizedBox(height: 10.0),
-                              // TextFormField(
-                              //   onChanged: (val) {
-                              //     setState(() {
-                              //       _phoneNo = val;
-                              //     });
-                              //   },
-                              //   validator: (val) {
-                              //     if (val.isEmpty) return "*Enter Phone No.";
-                              //     return null;
-                              //   },
-                              //   decoration: InputDecoration(
-                              //       icon: Icon(Icons.phone_android),
-                              //       labelText: 'Phone No. ',
-                              //       labelStyle: TextStyle(
-                              //           fontFamily: 'Montserrat',
-                              //           fontWeight: FontWeight.bold,
-                              //           color: Colors.grey),
-                              //       focusedBorder: UnderlineInputBorder(
-                              //           borderSide:
-                              //               BorderSide(color: Colors.green))),
-                              // ),
-                              TextFormField(
-                              validator: (val)=>val.isEmpty?"*Enter Email":null,
-                              keyboardType: TextInputType.emailAddress,
-                              onChanged: (val) {
-                                setState(() {
-                                  email = val;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                  labelText: 'Email',
-                                  icon: Icon(Icons.email),
-                                  labelStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.green))),
-                            ),
-                            SizedBox(height: 10.0),
-                            TextFormField(
-                              obscureText: true,
-                              validator: (val){
-                                if(val.length<6) return "*Invalid Password";
-                                return null;
-                              },
-                              onChanged: (val) {
-                                setState(() {
-                                  password = val;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                  labelText: 'Password',
-                                  icon: Icon(Icons.phone_android),
-                                  labelStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.green))),
-                            ),
-
+                               SizedBox(height: 10.0),
+                               TextFormField(
+                                 onChanged: (val) {
+                                   setState(() {
+                                     _phoneNo = '+91'+val;
+                                   });
+                                 },
+                                 validator: (val) {
+                                   if (val.isEmpty) return "*Enter Phone No.";
+                                   return null;
+                                 },
+                                 decoration: InputDecoration(
+                                     icon: Icon(Icons.phone_android),
+                                     labelText: 'Phone No. ',
+                                     labelStyle: TextStyle(
+                                         fontFamily: 'Montserrat',
+                                         fontWeight: FontWeight.bold,
+                                         color: Colors.grey),
+                                     focusedBorder: UnderlineInputBorder(
+                                         borderSide:
+                                             BorderSide(color: Colors.green))),
+                               ),
                               SizedBox(height: 50.0),
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.75,
@@ -119,16 +74,7 @@ class _SignInState extends State<ShopkeeperSignInPage> {
                                   ),
                                   onPressed: ()  async{
                                     if (_formKey.currentState.validate()) {
-                                    FirebaseUser user= await _auth.signInWithEmail(email, password);
-                                    // currentuser =user;
-                                    cid = user.uid;
-                                     if(user!=null)
-                                     {
-                                      Navigator.push(context, MaterialPageRoute(
-                                      builder: (context)=>ShopkeeperHomePage(cid: cid,)
-                                      ));
-                                     }
-                                       
+                                      _auth.registerWithPhoneNo(_phoneNo, context, _userType,'demo');
                                     }
                                   },
                                   child: Text(

@@ -1,34 +1,41 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nattupedika/Screens/Chat.dart';
+import 'package:nattupedika/models/user.dart';
 import 'package:nattupedika/services/auth.dart';
+import 'package:nattupedika/services/notification.dart';
+
 class ShopkeeperHomePage extends StatefulWidget {
-  ShopkeeperHomePage({Key key,this.cid}):super(key:key);
-  final String cid;
+
+  final User user;
+  ShopkeeperHomePage({Key key, @required this.user}) : super(key: key);
+
   @override
-  _HomePageState createState() => _HomePageState(cid: cid);
+  _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<ShopkeeperHomePage> {
-   _HomePageState({this.cid});
-   final String cid;
+
   final AuthService _auth = AuthService();
+  final NotificationService _notification= NotificationService();
+  
   final String shopClose = "Close";
   final String shopOpen = "Open";
-  String id;
-  
-   Widget BuildItem(BuildContext context,DocumentSnapshot document)
-  {
-  
+
+  Widget buildItem(BuildContext context, DocumentSnapshot document) {
     {
-       return GestureDetector(
-         onTap: ()
-         {
-           Navigator.push(context, MaterialPageRoute(builder: (context)=>Chat(peerId: document.data["uid"])));
-         },
-                child: Container(
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Chat(peerUid: document.data["uid"])));
+        },
+        child: Container(
           color: Colors.black26,
           padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           child: Row(
@@ -59,28 +66,62 @@ class _HomePageState extends State<ShopkeeperHomePage> {
                       fontWeight: FontWeight.w300))
             ],
           ),
-      ),
-       );
+        ),
+      );
     }
-   
-
   }
+
   @override
   void initState() {
-  super.initState();
-    readlocal();
+    super.initState();
+    _notification.registerNotification(widget.user.uid);
+    _notification.configLocalNotification();
   }
 
-  readlocal() async{
-      id='';
-    id = cid ?? '';
-    print(id);
+  
+
+  Future<bool> onBackPress() {
+    _exitDialog();
+    return Future.value(false);
   }
-  
- 
-  
 
-
+  Future<void> _exitDialog() async {
+    switch (await showDialog(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Exit app'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Are you sure to exit app?'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Cancel'),
+                onPressed: () {
+                  Navigator.pop(context, 0);
+                },
+              ),
+              FlatButton(
+                child: Text('Yes'),
+                onPressed: () {
+                  Navigator.pop(context, 1);
+                },
+              ),
+            ],
+          );
+        })) {
+      case 0:
+        break;
+      case 1:
+        exit(0);
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +131,6 @@ class _HomePageState extends State<ShopkeeperHomePage> {
           appBar: AppBar(
             title: const Text('Nattupeedikaa'),
           ),
-          
           drawer: Drawer(
             child: ListView(
               children: <Widget>[
@@ -135,57 +175,59 @@ class _HomePageState extends State<ShopkeeperHomePage> {
                       title: Text("Log Out"),
                       leading: Icon(Icons.power_settings_new),
                       onTap: () async {
-                        await _auth.signOut();
+                        await _auth.signOut(context);
                       },
                     ),
                   ],
                 )
               ],
             ),
-          ),          
-          body:Container(
-        child:StreamBuilder(
-          stream:Firestore.instance.collection('trial').document(id).collection('userchats').snapshots(),
-          builder: (context,snapshot)
-          {
-            if(!snapshot.hasData)
-            {
-              return Container(
-            height: MediaQuery.of(context).size.height,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    height: 300,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: SvgPicture.asset("images/no_chats.svg"),
-                  ),
-                  Text(
-                    "No Orders Yet",
-                    style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontSize: 18.0,
-                        color: Colors.grey),
-                  ),
-                ],
-              ),
-            ),
-          );
-            }
-            else
-            {
-              return ListView.builder(
-               padding: EdgeInsets.all(10.0),
-                itemBuilder: (context,index)=>BuildItem(context,snapshot.data.documents[index]),
-                 itemCount: snapshot.data.documents.length,
-              );
-            }
-            
-
-          })
-      )
           ),
+          body: WillPopScope(
+            onWillPop: onBackPress,
+            child: Container(
+                child: StreamBuilder(
+                    stream: Firestore.instance
+                        .collection('users')
+                        .document(widget.user.uid)
+                        .collection('userchats')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  height: 300,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                  child:
+                                      SvgPicture.asset("images/no_chats.svg"),
+                                ),
+                                Text(
+                                  "No Orders Yet",
+                                  style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 18.0,
+                                      color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      } else {
+                        return ListView.builder(
+                          padding: EdgeInsets.all(10.0),
+                          itemBuilder: (context, index) => buildItem(
+                              context, snapshot.data.documents[index]),
+                          itemCount: snapshot.data.documents.length,
+                        );
+                      }
+                    })),
+          )),
     );
   }
 }

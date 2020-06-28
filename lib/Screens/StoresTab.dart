@@ -18,23 +18,24 @@ class Stores extends StatelessWidget {
                     padding: EdgeInsets.all(10.0),
                     child: Card(
                       child: ListTile(
-                        onTap: () {
-                          Navigator.push(
+                        onTap: () async{
+                          String phoneNo=snapshot.data.documents[index]['phoneNo'];
+                          await getUid(phoneNo).then((value) => Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            MaterialPageRoute (
                                 builder: (context) => DetailedPage(
-                                      shopName: snapshot.data.documents[index]
-                                          ['name'],
-                                      address: snapshot.data.documents[index]
-                                          ['address'],
-                                      phoneNo: snapshot.data.documents[index]
-                                          ['phoneNo'],
-                                      timing: snapshot
-                                          .data.documents[index]['closingTime']
-                                          .toString(),
-                                      peerId: snapshot.data.documents[index]['uid']
-                                    )),
-                          );
+                                  shopName: snapshot.data.documents[index]
+                                  ['name'],
+                                  address: snapshot.data.documents[index]
+                                  ['address'],
+                                  phoneNo: snapshot.data.documents[index]
+                                  ['phoneNo'],
+                                  timing: snapshot
+                                      .data.documents[index]['closingTime']
+                                      .toString(),
+                                  shopkeeperUid:value.toString(),
+                                )),
+                          ));
                         },
                         leading: CircleAvatar(
                           backgroundImage: AssetImage("images/shop.jpg"),
@@ -58,4 +59,10 @@ class Stores extends StatelessWidget {
           }),
     );
   }
-}
+  Future<String> getUid(String phoneNo) async{
+   await Firestore.instance.collection("shopkeepers").document(phoneNo).get().then((value){
+      return value.data['id'].toString();
+    });
+    }
+  }
+

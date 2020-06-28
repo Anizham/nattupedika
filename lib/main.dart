@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:nattupedika/Screens/RootPage.dart';
 import 'package:nattupedika/services/auth.dart';
-import 'package:nattupedika/user.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/svg.dart';
+
+import 'RootPage.dart';
+import 'models/user.dart';
 
 
 void main() => runApp(MyApp());
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<User>.value(
+      catchError: (_, __) => null,
       value: AuthService().user,
       child: MaterialApp(
             debugShowCheckedModeBanner: false,

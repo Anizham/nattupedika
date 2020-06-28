@@ -16,11 +16,13 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final AuthService _auth = AuthService();
   final _formKey= GlobalKey<FormState>();
+
   bool loading=false;
   String email = '';
   String phoneNo = '';
   String name = '';
   String error="";
+
   @override
   Widget build(BuildContext context) {
     return loading ? Loading() : SafeArea(
@@ -63,28 +65,9 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                             SizedBox(height: 10.0),
                             TextFormField(
-                              validator: (val)=>val.isEmpty?"*Enter Email":null,
-                              keyboardType: TextInputType.emailAddress,
-                              onChanged: (val) {
-                                setState(() {
-                                  email = val;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                  labelText: 'Email',
-                                  icon: Icon(Icons.email),
-                                  labelStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.green))),
-                            ),
-                            SizedBox(height: 10.0),
-                            TextFormField(
                               validator: (val){
                                 if(val.isEmpty) return "*Enter Phone No.";
-                                if(val.length<10||val.length>13) return "*Invalid Phone No.";
+                                if(val.length<10||val.length>10) return "*Invalid Phone No.";
                                 return null;
                               },
                               keyboardType: TextInputType.text,
@@ -112,10 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                                 onPressed: () async{
                                   if(_formKey.currentState.validate()){
-                                    setState(() {
-                                      loading=true;
-                                    });
-                                    dynamic result=_auth.signInWithPhoneNo(phoneNo, context, widget.userType);                                                          
+                                    dynamic result=_auth.registerWithPhoneNo(phoneNo, context, widget.userType,name);                  ;
                                     if(result==false){
                                       setState(() {
                                         loading=false;

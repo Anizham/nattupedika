@@ -1,17 +1,24 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:nattupedika/user.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:nattupedika/models/user.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../full_photo.dart';
 
 class Chat extends StatelessWidget {
-  final String peerId;
-  
+  final String peerUid;
 
-  Chat({Key key, @required this.peerId}) : super(key: key);
+  Chat({Key key, @required this.peerUid}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+    print(user.uid);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -20,33 +27,37 @@ class Chat extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: ChatScreen1(
-        peerId: peerId,
+      body: ChatScreen(
+        peerId: peerUid,
+        uid: user.uid,
       ),
     );
   }
 }
 
-class ChatScreen1 extends StatefulWidget {
+class ChatScreen extends StatefulWidget {
   final String peerId;
+  final String uid;
 
-  ChatScreen1({Key key, @required this.peerId}) : super(key: key);
+  ChatScreen({Key key, @required this.peerId, @required this.uid})
+      : super(key: key);
 
   @override
-  State createState() => ChatScreen1State(peerId: peerId);
+  State createState() => ChatScreenState(peerId: peerId, uid: uid);
 }
 
-class ChatScreen1State extends State<ChatScreen1> {
-  ChatScreen1State({Key key, @required this.peerId});
+class ChatScreenState extends State<ChatScreen> {
+  ChatScreenState({Key key, @required this.peerId, @required this.uid});
 
   String peerId;
-  String id;
+  String uid;
 
   var listMessage;
   String groupChatId;
-  SharedPreferences prefs;
-
   bool isLoading;
+
+  File imageFile;
+  String imageUrl;
 
   final TextEditingController textEditingController = TextEditingController();
   final ScrollController listScrollController = ScrollController();
@@ -56,46 +67,56 @@ class ChatScreen1State extends State<ChatScreen1> {
     super.initState();
 
     groupChatId = '';
+    imageUrl = '';
 
     isLoading = false;
     readLocal();
   }
 
   readLocal() async {
-    prefs = await SharedPreferences.getInstance();
-    id = prefs.getString('id') ?? 'sVrdNTvY08dPx2K8EC1TLY0qcOE2';
-    if (id.hashCode <= peerId.hashCode) {
-      groupChatId = '$id-$peerId';
+    if (uid.hashCode <= peerId.hashCode) {
+      groupChatId = '$uid-$peerId';
     } else {
-      groupChatId = '$peerId-$id';
+      groupChatId = '$peerId-$uid';
     }
 
     Firestore.instance
         .collection('users')
-        .document(id)
+        .document(uid)
         .updateData({'chattingWith': peerId});
-
-    setState(() {});
   }
 
-//  Future uploadFile() async {
-//    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-//    StorageReference reference = FirebaseStorage.instance.ref().child(fileName);
-//    StorageUploadTask uploadTask = reference.putFile(imageFile);
-//    StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
-//    storageTaskSnapshot.ref.getDownloadURL().then((downloadUrl) {
-//      imageUrl = downloadUrl;
-//      setState(() {
-//        isLoading = false;
-//        onSendMessage(imageUrl, 1);
-//      });
-//    }, onError: (err) {
-//      setState(() {
-//        isLoading = false;
-//      });
-//      Fluttertoast.showToast(msg: 'This file is not an image');
-//    });
-//  }
+  Future getImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+        isLoading = true;
+      });
+      uploadFile();
+    }
+  }
+
+  Future uploadFile() async {
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    StorageReference reference = FirebaseStorage.instance.ref().child(fileName);
+    StorageUploadTask uploadTask = reference.putFile(imageFile);
+    StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
+    storageTaskSnapshot.ref.getDownloadURL().then((downloadUrl) {
+      imageUrl = downloadUrl;
+      setState(() {
+        isLoading = false;
+        onSendMessage(imageUrl, 1);
+      });
+    }, onError: (err) {
+      setState(() {
+        isLoading = false;
+      });
+      print("not image");
+    });
+  }
 
   void onSendMessage(String content, int type) {
     // type: 0 = text, 1 = image, 2 = sticker
@@ -112,7 +133,7 @@ class ChatScreen1State extends State<ChatScreen1> {
         await transaction.set(
           documentReference,
           {
-            'idFrom': id,
+            'idFrom': uid,
             'idTo': peerId,
             'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
             'content': content,
@@ -120,7 +141,12 @@ class ChatScreen1State extends State<ChatScreen1> {
           },
         );
       });
-      Firestore.instance.collection('trial').document(peerId).collection('userchats').document(id).setData({'username':peerId,'uid':id});
+      Firestore.instance
+          .collection('users')
+          .document(peerId)
+          .collection('userchats')
+          .document(uid)
+          .setData({'username': peerId, 'uid': uid});
       listScrollController.animateTo(0.0,
           duration: Duration(milliseconds: 300), curve: Curves.easeOut);
     } else {
@@ -129,22 +155,104 @@ class ChatScreen1State extends State<ChatScreen1> {
   }
 
   Widget buildItem(int index, DocumentSnapshot document) {
-    if (document['idFrom'] == id) {
+    if (document['idFrom'] == uid) {
       // Right (my message)
       return Row(
         children: <Widget>[
-          Container(
-            child: Text(
-              document['content'],
-              style: TextStyle(color: Colors.white),
-            ),
-            padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-            width: 200.0,
-            decoration: BoxDecoration(
-                color: Colors.grey, borderRadius: BorderRadius.circular(8.0)),
-            margin: EdgeInsets.only(
-                bottom: isLastMessageRight(index) ? 20.0 : 10.0, right: 10.0),
-          )
+          document['type'] == 0
+              // Text
+              ? Container(
+                  child: Text(
+                    document['content'],
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+                  width: 200.0,
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(8.0)),
+                  margin: EdgeInsets.only(
+                      bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                      right: 10.0),
+                )
+              : document['type'] == 2
+                  ? Container(
+                      child: Column(
+                        children: <Widget>[
+                          ListTile(
+                            leading: Icon(Icons.shopping_cart),
+                            title: Text("Order"),
+                          ),
+                          Divider(
+                            color: Colors.black,
+                          ),
+                          Text(
+                            document['content'],
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ],
+                      ),
+                      padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+                      width: 200.0,
+                      decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(10.0)),
+                      margin: EdgeInsets.only(
+                          bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                          right: 10.0),
+                    )
+                  : Container(
+                      child: FlatButton(
+                        child: Material(
+                          child: CachedNetworkImage(
+                            placeholder: (context, url) => Container(
+                              child: CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.green),
+                              ),
+                              width: 200.0,
+                              height: 200.0,
+                              padding: EdgeInsets.all(70.0),
+                              decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8.0),
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Material(
+                              child: Image.asset(
+                                'images/img_not_available.jpeg',
+                                width: 200.0,
+                                height: 200.0,
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8.0),
+                              ),
+                              clipBehavior: Clip.hardEdge,
+                            ),
+                            imageUrl: document['content'],
+                            width: 200.0,
+                            height: 200.0,
+                            fit: BoxFit.cover,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          clipBehavior: Clip.hardEdge,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      FullPhoto(url: document['content'])));
+                        },
+                        padding: EdgeInsets.all(0),
+                      ),
+                      margin: EdgeInsets.only(
+                          bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                          right: 10.0),
+                    ),
         ],
         mainAxisAlignment: MainAxisAlignment.end,
       );
@@ -153,22 +261,106 @@ class ChatScreen1State extends State<ChatScreen1> {
       return Container(
         child: Column(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    document['content'],
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-                  width: 200.0,
-                  decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(8.0)),
-                  margin: EdgeInsets.only(left: 10.0),
-                ),
-              ],
-            ),
+            document['type'] == 0
+                // Text
+                ? Container(
+                    child: Text(
+                      document['content'],
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+                    width: 200.0,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(8.0)),
+                    margin: EdgeInsets.only(
+                        bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                        right: 10.0),
+                  )
+                : document['type'] == 2
+                    ? Container(
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(
+                              leading: Icon(Icons.shopping_cart),
+                              title: Text("Order"),
+                            ),
+                            Divider(
+                              color: Colors.black,
+                            ),
+                            Text(
+                              document['content'],
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            RaisedButton(
+                              onPressed: () {
+                                print("Order Ready");
+                              },
+                              child: Text('Order Ready'),
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                        padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+                        width: 200.0,
+                        decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(10.0)),
+                        margin: EdgeInsets.only(
+                            bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                            right: 10.0),
+                      )
+                    : Container(
+                        child: FlatButton(
+                          child: Material(
+                            child: CachedNetworkImage(
+                              placeholder: (context, url) => Container(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.green),
+                                ),
+                                width: 200.0,
+                                height: 200.0,
+                                padding: EdgeInsets.all(70.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8.0),
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Material(
+                                child: Image.asset(
+                                  'images/img_not_available.jpeg',
+                                  width: 200.0,
+                                  height: 200.0,
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8.0),
+                                ),
+                                clipBehavior: Clip.hardEdge,
+                              ),
+                              imageUrl: document['content'],
+                              width: 200.0,
+                              height: 200.0,
+                              fit: BoxFit.cover,
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            clipBehavior: Clip.hardEdge,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        FullPhoto(url: document['content'])));
+                          },
+                          padding: EdgeInsets.all(0),
+                        ),
+                        margin: EdgeInsets.only(left: 10.0),
+                      ),
           ],
           crossAxisAlignment: CrossAxisAlignment.start,
         ),
@@ -180,7 +372,7 @@ class ChatScreen1State extends State<ChatScreen1> {
   bool isLastMessageLeft(int index) {
     if ((index > 0 &&
             listMessage != null &&
-            listMessage[index - 1]['idFrom'] == id) ||
+            listMessage[index - 1]['idFrom'] == uid) ||
         index == 0) {
       return true;
     } else {
@@ -191,7 +383,7 @@ class ChatScreen1State extends State<ChatScreen1> {
   bool isLastMessageRight(int index) {
     if ((index > 0 &&
             listMessage != null &&
-            listMessage[index - 1]['idFrom'] != id) ||
+            listMessage[index - 1]['idFrom'] != uid) ||
         index == 0) {
       return true;
     } else {
@@ -202,7 +394,7 @@ class ChatScreen1State extends State<ChatScreen1> {
   Future<bool> onBackPress() {
     Firestore.instance
         .collection('users')
-        .document(id)
+        .document(uid)
         .updateData({'chattingWith': null});
     Navigator.pop(context);
     return Future.value(false);
@@ -241,6 +433,30 @@ class ChatScreen1State extends State<ChatScreen1> {
     return Container(
       child: Row(
         children: <Widget>[
+          Material(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 1.0),
+              child: IconButton(
+                icon: Icon(Icons.image),
+                onPressed: getImage,
+                color: Colors.black,
+              ),
+            ),
+            color: Colors.white,
+          ),
+
+          Material(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
+              child: IconButton(
+                icon: Icon(Icons.shopping_cart),
+                onPressed: () => null,
+                color: Colors.black,
+              ),
+            ),
+            color: Colors.white,
+          ),
+
           Flexible(
             child: Container(
               child: TextField(
