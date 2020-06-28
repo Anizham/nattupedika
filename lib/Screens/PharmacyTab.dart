@@ -19,23 +19,27 @@ class Pharmacy extends StatelessWidget {
                     padding: EdgeInsets.all(10.0),
                     child: Card(
                       child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DetailedPage(
-                                      shopName: snapshot.data.documents[index]
-                                          ['name'],
-                                      address: snapshot.data.documents[index]
-                                          ['address'],
-                                      phoneNo: snapshot.data.documents[index]
-                                          ['phoneNo'],
-                                      timing: snapshot
-                                          .data.documents[index]['closingTime']
-                                          .toString(),
-                                          shopkeeperUid: snapshot.data.documents[index]['uid'],
-                                    )),
-                          );
+                        onTap: () async{
+                          String phoneNo=snapshot.data.documents[index]['phoneNo'];
+                          await Firestore.instance.collection("shopkeepers").document(phoneNo).get().then((value){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute (
+                                  builder: (context) => DetailedPage(
+                                    shopName: snapshot.data.documents[index]
+                                    ['name'],
+                                    address: snapshot.data.documents[index]
+                                    ['address'],
+                                    phoneNo: snapshot.data.documents[index]
+                                    ['phoneNo'],
+                                    timing: snapshot
+                                        .data.documents[index]['closingTime']
+                                        .toString(),
+                                    shopkeeperUid:value.data['id'].toString(),
+                                  )),
+                            );
+
+                          });
                         },
                         leading: CircleAvatar(
                           backgroundImage: AssetImage("images/pharmacy.jpg"),

@@ -18,6 +18,7 @@ class DetailedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(shopkeeperUid);
     return SafeArea(
       child: Scaffold(
         extendBodyBehindAppBar: true,
