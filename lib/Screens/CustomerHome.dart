@@ -95,6 +95,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    String email=widget.email;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(

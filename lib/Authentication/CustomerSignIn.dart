@@ -114,18 +114,15 @@ class _SignInState extends State<CustomerSignInPage> {
                           ),
                         ),
                         SizedBox(
-                          height: 60.0,
+                          height: 50.0,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10.0),
                           child: OutlineButton(
                             splashColor: Colors.grey,
                             onPressed: () async{
-                                setState(() {
-                                  loading=true;
-                                });
-                                dynamic result=await _auth.signInWithGoogle(_userType,context);
-                                if(result==false){
+                                dynamic result=await _auth.signInWithGoogle();
+                                if(result==null){
                                   setState(() {
                                     loading=false;
                                     error='Authentication failed';
