@@ -121,14 +121,17 @@ class _SignInState extends State<CustomerSignInPage> {
                           child: OutlineButton(
                             splashColor: Colors.grey,
                             onPressed: () async{
-                                dynamic result=await _auth.signInWithGoogle();
-                                if(result==null){
-                                  setState(() {
-                                    loading=false;
-                                    error='Authentication failed';
-                                    print(error);
-                                  });
-                                }
+                              setState(() {
+                                loading=true;
+                              });
+                              dynamic result=await _auth.signInWithGoogle(_userType,context);
+                              if(result==false){
+                                setState(() {
+                                  loading=false;
+                                  error='Authentication failed';
+                                  print(error);
+                                });
+                              }
                             },
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(40)),

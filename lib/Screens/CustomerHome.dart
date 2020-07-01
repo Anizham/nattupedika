@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -95,7 +96,6 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    String email=widget.email;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -113,7 +113,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                     children: <Widget>[
                       CircleAvatar(
                         backgroundImage:
-                            AssetImage("images/emergency_avatar.jpg"),
+                        AssetImage("images/emergency_avatar.jpg"),
                         radius: 60.0,
                       ),
                       Text(widget.user.uid),
