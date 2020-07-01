@@ -4,18 +4,15 @@ import 'package:nattupedika/Loading.dart';
 import 'package:nattupedika/services/auth.dart';
 
 class ShopkeeperSignInPage extends StatefulWidget {
-//  final String userType;
-//  ShopkeeperSignInPage({Key key, @required this.userType}) : super(key: key);
-
   @override
   _SignInState createState() => _SignInState();
 }
 
 class _SignInState extends State<ShopkeeperSignInPage> {
+
   String _phoneNo = "";
   String error = "";
   String _userType = "shopkeeper";
-
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
@@ -45,28 +42,28 @@ class _SignInState extends State<ShopkeeperSignInPage> {
                           key: _formKey,
                           child: Column(
                             children: <Widget>[
-                              SizedBox(height: 10.0),
-                              TextFormField(
-                                onChanged: (val) {
-                                  setState(() {
-                                    _phoneNo = val;
-                                  });
-                                },
-                                validator: (val) {
-                                  if (val.isEmpty) return "*Enter Phone No.";
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                    icon: Icon(Icons.phone_android),
-                                    labelText: 'Phone No. ',
-                                    labelStyle: TextStyle(
-                                        fontFamily: 'Montserrat',
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.green))),
-                              ),
+                               SizedBox(height: 10.0),
+                               TextFormField(
+                                 onChanged: (val) {
+                                   setState(() {
+                                     _phoneNo = '+91'+val;
+                                   });
+                                 },
+                                 validator: (val) {
+                                   if (val.isEmpty) return "*Enter Phone No.";
+                                   return null;
+                                 },
+                                 decoration: InputDecoration(
+                                     icon: Icon(Icons.phone_android),
+                                     labelText: 'Phone No. ',
+                                     labelStyle: TextStyle(
+                                         fontFamily: 'Montserrat',
+                                         fontWeight: FontWeight.bold,
+                                         color: Colors.grey),
+                                     focusedBorder: UnderlineInputBorder(
+                                         borderSide:
+                                             BorderSide(color: Colors.green))),
+                               ),
                               SizedBox(height: 50.0),
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.75,
@@ -75,10 +72,9 @@ class _SignInState extends State<ShopkeeperSignInPage> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20.0),
                                   ),
-                                  onPressed: () {
+                                  onPressed: ()  async{
                                     if (_formKey.currentState.validate()) {
-                                      _auth.signInWithPhoneNo(
-                                          _phoneNo, context, _userType);
+                                      _auth.registerWithPhoneNo(_phoneNo, context, _userType,'demo');
                                     }
                                   },
                                   child: Text(

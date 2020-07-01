@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-import 'file:///E:/covid/nattupedika/lib/Screens/Chat.dart';
+import 'package:nattupedika/Screens/Chat.dart';
 
 class DetailedPage extends StatelessWidget {
   final String address;
   final String phoneNo;
   final String timing;
   final String shopName;
-  final String peerId;
+  final String shopkeeperUid;
   DetailedPage({
     Key key,
     @required this.shopName,
     @required this.address,
     @required this.timing,
     @required this.phoneNo,
-    @required this.peerId
+    @required this.shopkeeperUid
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print(shopkeeperUid);
     return SafeArea(
       child: Scaffold(
         extendBodyBehindAppBar: true,
@@ -34,7 +35,9 @@ class DetailedPage extends StatelessWidget {
               Icons.arrow_back,
               color: Colors.white,
             ),
-            onPressed: (){},
+            onPressed: (){
+              Navigator.pop(context);
+            },
           ),
         ),
         body: SingleChildScrollView(
@@ -77,7 +80,7 @@ class DetailedPage extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => Chat(
-                    peerId: peerId,
+                    peerUid: shopkeeperUid,
                       )),
             );
           },

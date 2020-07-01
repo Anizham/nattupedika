@@ -10,7 +10,7 @@ class Pharmacy extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
-          stream: Firestore.instance.collection('pharmacy_data').snapshots(),
+          stream: Firestore.instance.collection('data').where('category', isEqualTo: 'pharmacy').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return Loading();
             return ListView.builder(
@@ -21,23 +21,27 @@ class Pharmacy extends StatelessWidget {
                     child: Card(
                       child: ListTile(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DetailedPage(
-                                      shopName: snapshot.data.documents[index]
-                                          ['name'],
-                                      address: snapshot.data.documents[index]
-                                          ['address'],
-                                      phoneNo: snapshot.data.documents[index]
-                                          ['phoneNo'],
-                                      timing: snapshot
-                                          .data.documents[index]['closingTime']
-                                          .toString(),
-                                      peerId: snapshot.data.documents[index]
-                                          ['uid'],
-                                    )),
-                          );
+                          //String phoneNo=snapshot.data.documents[index]['phoneNo'];
+                         // await Firestore.instance.collection("shopkeepers").document(phoneNo).get().then((value){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute (
+                                  builder: (context) => DetailedPage(
+                                    shopName: snapshot.data.documents[index]
+                                    ['name'],
+                                    address: snapshot.data.documents[index]
+                                    ['address'],
+                                    phoneNo: snapshot.data.documents[index]
+                                    ['phoneNo'],
+                                    timing: snapshot
+                                        .data.documents[index]['closingTime']
+                                        .toString(),
+                                    shopkeeperUid:snapshot.data.documents[index]
+                                    ['uid'],
+                                  )),
+                            );
+
+                         // });
                         },
                         leading: CircleAvatar(
                           backgroundImage: AssetImage("images/pharmacy.jpg"),

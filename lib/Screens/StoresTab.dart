@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'file:///E:/covid/nattupedika/lib/Screens/DetaildPage.dart';
+import 'package:nattupedika/Screens/DetaildPage.dart';
 import 'package:nattupedika/Loading.dart';
 import 'package:nattupedika/services/url.dart';
 
@@ -10,7 +10,7 @@ class Stores extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
-          stream: Firestore.instance.collection('store_data').snapshots(),
+          stream: Firestore.instance.collection('data').where('category', isEqualTo: 'store').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return Loading();
             return ListView.builder(
@@ -21,22 +21,27 @@ class Stores extends StatelessWidget {
                     child: Card(
                       child: ListTile(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DetailedPage(
-                                      shopName: snapshot.data.documents[index]
-                                          ['name'],
-                                      address: snapshot.data.documents[index]
-                                          ['address'],
-                                      phoneNo: snapshot.data.documents[index]
-                                          ['phoneNo'],
-                                      timing: snapshot
-                                          .data.documents[index]['closingTime']
-                                          .toString(),
-                                      peerId: snapshot.data.documents[index]['uid']
-                                    )),
-                          );
+                          //String phoneNo=snapshot.data.documents[index]['phoneNo'];
+                        //  await Firestore.instance.collection("data").document(phoneNo).get().then((value){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute (
+                                  builder: (context) => DetailedPage(
+                                    shopName: snapshot.data.documents[index]
+                                    ['name'],
+                                    address: snapshot.data.documents[index]
+                                    ['address'],
+                                    phoneNo: snapshot.data.documents[index]
+                                    ['phoneNo'],
+                                    timing: snapshot
+                                        .data.documents[index]['closingTime']
+                                        .toString(),
+                                    shopkeeperUid:snapshot.data.documents[index]
+                                    ['uid'],
+                                  )),
+                            );
+
+                         // });
                         },
                         leading: CircleAvatar(
                           backgroundImage: AssetImage("images/shop.jpg"),
@@ -66,4 +71,5 @@ class Stores extends StatelessWidget {
           }),
     );
   }
-}
+  }
+

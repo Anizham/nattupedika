@@ -1,11 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nattupedika/services/auth.dart';
-
 import '../Loading.dart';
 
 class SignUpPage extends StatefulWidget {
   final String userType;
+  
   SignUpPage({Key key, @required this.userType}) : super(key: key);
 
   @override
@@ -17,7 +18,6 @@ class _SignUpPageState extends State<SignUpPage> {
   final _formKey= GlobalKey<FormState>();
 
   bool loading=false;
-
   String email = '';
   String phoneNo = '';
   String name = '';
@@ -65,31 +65,12 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                             SizedBox(height: 10.0),
                             TextFormField(
-                              validator: (val)=>val.isEmpty?"*Enter Email":null,
-                              keyboardType: TextInputType.emailAddress,
-                              onChanged: (val) {
-                                setState(() {
-                                  email = val;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                  labelText: 'Email',
-                                  icon: Icon(Icons.email),
-                                  labelStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.green))),
-                            ),
-                            SizedBox(height: 10.0),
-                            TextFormField(
                               validator: (val){
                                 if(val.isEmpty) return "*Enter Phone No.";
-                                if(val.length<10||val.length>13) return "*Invalid Phone No.";
+                                if(val.length<10||val.length>10) return "*Invalid Phone No.";
                                 return null;
                               },
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.text,
                               onChanged: (val) {
                                 setState(() {
                                   phoneNo = val;
@@ -114,7 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                                 onPressed: () async{
                                   if(_formKey.currentState.validate()){
-                                    dynamic result=_auth.signInWithPhoneNo(phoneNo, context, widget.userType);
+                                    dynamic result=_auth.registerWithPhoneNo(phoneNo, context, widget.userType,name);                  ;
                                     if(result==false){
                                       setState(() {
                                         loading=false;

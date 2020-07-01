@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:nattupedika/models/user.dart';
 import 'package:nattupedika/services/auth.dart';
-import 'package:nattupedika/user.dart';
+import 'package:nattupedika/services/notification.dart';
 
 import 'EmergencyTab.dart';
 import 'HealthcareTab.dart';
@@ -17,11 +20,15 @@ class CustomerHomePage extends StatefulWidget {
 }
 
 class _CustomerHomePageState extends State<CustomerHomePage> {
-  int _selectedIndex = 0;
-  final AuthService _auth=AuthService();
 
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  int _selectedIndex = 0;
+
+  final AuthService _auth = AuthService();
+  final NotificationService _notification=NotificationService();
+
+
+//  static const TextStyle optionStyle =
+//      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   final List<Widget> _widgetOptions = <Widget>[
     Stores(),
@@ -30,14 +37,65 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
     Emergency(),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _notification.registerNotification(widget.user.uid);
+    _notification.configLocalNotification();
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
+  Future<bool> onBackPress() {
+    _exitDialog();
+    return Future.value(false);
+  }
+
+  Future<void> _exitDialog() async {
+    switch (await showDialog(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Exit app'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Are you sure to exit app?'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Cancel'),
+                onPressed: () {
+                  Navigator.pop(context, 0);
+                },
+              ),
+              FlatButton(
+                child: Text('Yes'),
+                onPressed: () {
+                  Navigator.pop(context, 1);
+                },
+              ),
+            ],
+          );
+        })) {
+      case 0:
+        break;
+      case 1:
+        exit(0);
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    String email=widget.email;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -54,10 +112,11 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                   child: Column(
                     children: <Widget>[
                       CircleAvatar(
-                        backgroundImage: AssetImage("images/emergency_avatar.jpg"),
-                        radius: 50.0,
+                        backgroundImage:
+                            AssetImage("images/emergency_avatar.jpg"),
+                        radius: 60.0,
                       ),
-                      Text("UserName"),
+                      Text(widget.user.uid),
                     ],
                   ),
                 ),
@@ -65,22 +124,22 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               Column(
                 children: <Widget>[
                   ListTile(
-                    title:Text("About"),
-                    leading:Icon(Icons.info_outline) ,
+                    title: Text("About"),
+                    leading: Icon(Icons.info_outline),
                   ),
                   ListTile(
-                    title:Text("Help"),
-                    leading:Icon(Icons.help) ,
+                    title: Text("Help"),
+                    leading: Icon(Icons.help),
                   ),
                   ListTile(
-                    title:Text("Settings"),
-                    leading:Icon(Icons.settings) ,
+                    title: Text("Settings"),
+                    leading: Icon(Icons.settings),
                   ),
                   ListTile(
-                    title:Text("Log Out"),
-                    leading:Icon(Icons.power_settings_new) ,
-                    onTap: ()async{
-                      await _auth.signOut();
+                    title: Text("Log Out"),
+                    leading: Icon(Icons.power_settings_new),
+                    onTap: () async {
+                      await _auth.signOut(context);
                     },
                   ),
                 ],
@@ -88,7 +147,9 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
             ],
           ),
         ),
-        body: _widgetOptions[_selectedIndex],
+        body: WillPopScope(
+            child: _widgetOptions[_selectedIndex],
+            onWillPop: onBackPress),
         bottomNavigationBar: Theme(
           data: Theme.of(context).copyWith(
             canvasColor: Colors.green,

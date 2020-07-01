@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'file:///E:/covid/nattupedika/lib/Screens/RootPage.dart';
 import 'package:nattupedika/services/auth.dart';
-import 'package:nattupedika/user.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/svg.dart';
+
+import 'RootPage.dart';
+import 'models/user.dart';
 
 
 void main() => runApp(MyApp());
@@ -41,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Duration(seconds: 3),
       ()
       {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>RootPage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>RootPage()));
       }
     );
   }
