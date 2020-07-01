@@ -294,7 +294,7 @@ class ChatScreenState extends State<ChatScreen> {
                             ),
                             RaisedButton(
                               onPressed: () {
-                                print("Order Ready");
+                                onSendMessage("Your order is ready", 1);
                               },
                               child: Text('Order Ready'),
                               color: Colors.white,
@@ -450,7 +450,8 @@ class ChatScreenState extends State<ChatScreen> {
               margin: EdgeInsets.symmetric(horizontal: 8.0),
               child: IconButton(
                 icon: Icon(Icons.shopping_cart),
-                onPressed: () => null,
+                onPressed: () => _getOrderDialog(context)
+                    .then((value) => onSendMessage(value, 2)),
                 color: Colors.black,
               ),
             ),
@@ -525,6 +526,53 @@ class ChatScreenState extends State<ChatScreen> {
                 }
               },
             ),
+    );
+  }
+
+  Future<String> _getOrderDialog(BuildContext context) async {
+    TextEditingController controller = TextEditingController();
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Order'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  style: TextStyle(color: Colors.black, fontSize: 15.0),
+                  controller: controller,
+                  decoration: InputDecoration.collapsed(
+                    hintText: 'Enter your order',
+                    hintStyle: TextStyle(color: Colors.green),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('Order'),
+              onPressed: () {
+                if (controller.text == "") {
+                  print("Empty order");
+                } else {
+                  Navigator.of(context).pop(controller.text.toString());
+                }
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
