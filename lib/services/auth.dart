@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nattupedika/Screens/CustomerHome.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Screens/ShopkeeperHome.dart';
 import '../main.dart';
@@ -14,7 +13,6 @@ class AuthService {
 
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  SharedPreferences prefs;
 
   User _userFromFirebaseUser(FirebaseUser user) {
     return user != null ? User(uid: user.uid) : null;
@@ -49,7 +47,7 @@ class AuthService {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ShopkeeperHomePage(pno1: phoneNo,user: user,)));
+                      builder: (context) => ShopkeeperHomePage(user: user,)));
             }
           }
         },
@@ -103,7 +101,7 @@ class AuthService {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        ShopkeeperHomePage(pno1: phoneNo,user: user,)));
+                                        ShopkeeperHomePage(user: user,)));
                           }
                         } else {
                           print("Error");
@@ -144,15 +142,16 @@ class AuthService {
                 'username': username,
                 'userType': userType,
                 'id': user.uid,
+                'phoneNo':phoneNo,
                 'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
                 'chattingWith': null
               });
               if(userType=="shopkeeper"){
                 Firestore.instance
-                    .collection('shopkeepers')
+                    .collection('data')
                     .document(phoneNo)
-                    .setData({
-                  'id': user.uid,
+                    .updateData({
+                  'uid':user.uid
                 });
               }
 
@@ -171,7 +170,7 @@ class AuthService {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ShopkeeperHomePage(pno1: phoneNo,user: user,)));
+                      builder: (context) => ShopkeeperHomePage(user: user,)));
             }
           } else {
             print("error");
@@ -247,7 +246,7 @@ class AuthService {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          ShopkeeperHomePage(pno1: phoneNo,user: user,)));
+                                          ShopkeeperHomePage(user: user,)));
                             }
                           } else {
                             print("User already exists");
@@ -353,7 +352,6 @@ class AuthService {
   }
 
   Future signOut(BuildContext context) async {
-    await _auth.signOut();
     try {
       if (await _googleSignIn.isSignedIn()) {
         await _googleSignIn.disconnect();

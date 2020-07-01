@@ -23,9 +23,5 @@ class RootPage extends StatelessWidget {
     }
   }
 
-  Future<String> getUserType(String uid) async{
-    await Firestore.instance.collection("users").document(uid).get().then((value){
-      return value.data['userType'];
-    });
-  }
+
 }

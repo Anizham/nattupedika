@@ -9,7 +9,7 @@ class Pharmacy extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
-          stream: Firestore.instance.collection('pharmacy_data').snapshots(),
+          stream: Firestore.instance.collection('data').where('category', isEqualTo: 'pharmacy').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return Loading();
             return ListView.builder(
@@ -19,9 +19,9 @@ class Pharmacy extends StatelessWidget {
                     padding: EdgeInsets.all(10.0),
                     child: Card(
                       child: ListTile(
-                        onTap: () async{
-                          String phoneNo=snapshot.data.documents[index]['phoneNo'];
-                          await Firestore.instance.collection("shopkeepers").document(phoneNo).get().then((value){
+                        onTap: () {
+                          //String phoneNo=snapshot.data.documents[index]['phoneNo'];
+                         // await Firestore.instance.collection("shopkeepers").document(phoneNo).get().then((value){
                             Navigator.push(
                               context,
                               MaterialPageRoute (
@@ -35,11 +35,12 @@ class Pharmacy extends StatelessWidget {
                                     timing: snapshot
                                         .data.documents[index]['closingTime']
                                         .toString(),
-                                    shopkeeperUid:value.data['id'].toString(),
+                                    shopkeeperUid:snapshot.data.documents[index]
+                                    ['uid'],
                                   )),
                             );
 
-                          });
+                         // });
                         },
                         leading: CircleAvatar(
                           backgroundImage: AssetImage("images/pharmacy.jpg"),
