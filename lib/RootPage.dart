@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nattupedika/Screens/ShopkeeperHome.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +21,4 @@ class RootPage extends StatelessWidget {
       }
     }
   }
-
-
 }
