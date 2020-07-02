@@ -74,18 +74,25 @@ class DetailedPage extends StatelessWidget {
             ],
           ),
         )),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Chat(
-                    peerUid: shopkeeperUid,
+        floatingActionButton: Builder(builder: (BuildContext context){
+          return FloatingActionButton.extended(
+            onPressed: () {
+              if(shopkeeperUid==''){
+                final snackBar = SnackBar(content: Text('This shop does not offer chat service.',style: TextStyle(color: Colors.green),));
+                Scaffold.of(context).showSnackBar(snackBar);
+              }else{
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Chat(
+                        peerUid: shopkeeperUid,
                       )),
-            );
-          },
-          label: Text("PLACE ORDER"),
-        ),
+                );
+              }
+            },
+            label: Text("PLACE ORDER"),
+          );
+        }),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );

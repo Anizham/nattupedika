@@ -294,7 +294,7 @@ class ChatScreenState extends State<ChatScreen> {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      onSendMessage("Your order is ready", 1);
+                      onSendMessage("Your order is ready", 0);
                     },
                     child: Text('Order Ready'),
                     color: Colors.white,
