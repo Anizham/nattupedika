@@ -125,7 +125,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                 children: <Widget>[
                   ListTile(
                     title: Text("About"),
-                    onTap: () => showAboutDialog(context: context,applicationVersion: '1.1.1',applicationIcon: Image.asset('images/app_icon.png'),applicationName: 'Nattupedika',applicationLegalese: '...'),
+                    onTap: () => showAboutDialog(context: context,applicationVersion: '1.1.1',applicationIcon: Image.asset('images/app_icon.png'),applicationName: 'Nattupedika',applicationLegalese: 'An app to connect local businesses with local people which enables people to buy groceries from them.'),
                     leading: Icon(Icons.info_outline),
                   ),
                   ListTile(
