@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nattupedika/Screens/CustomerHome.dart';
-
+import 'package:nattupedika/Authentication/SignUpPage.dart';
 import '../Screens/ShopkeeperHome.dart';
 import '../main.dart';
 import '../models/user.dart';
@@ -35,6 +35,43 @@ class AuthService {
           User user = _userFromFirebaseUser(result.user);
 
           if (user != null) {
+         final QuerySnapshot snapshot = await Firestore.instance
+                .collection('users')
+                .where('id', isEqualTo: user.uid)
+                .getDocuments();
+          final List<DocumentSnapshot> documents = snapshot.documents;
+             if(documents.length==0)
+             {
+               showDialog(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Didnt Sign up'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Looks like you didnt sign up'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Cancel'),
+                onPressed: () {
+                  Navigator.pop(context, 0);
+                },
+              ),
+              FlatButton(
+                child: Text('Sign Up'),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpPage(userType: userType,)));
+                },
+              ),
+            ],
+          );
+        });
+         }
             if (userType == "customer") {
               Navigator.pushReplacement(
                   context,
@@ -100,8 +137,8 @@ class AuthService {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        ShopkeeperHomePage(user: user,)));
+                                    builder: (context) => 
+                                     ShopkeeperHomePage(user: user,) ));
                           }
                         } else {
                           print("Error");

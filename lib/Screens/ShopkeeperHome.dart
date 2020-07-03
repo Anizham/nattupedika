@@ -182,6 +182,9 @@ class _HomePageState extends State<ShopkeeperHomePage> {
                     Divider(),
                     ListTile(
                       title: Text("About"),
+                      onTap: (){
+                        showAboutDialog(context: context,applicationVersion: '1.1.1',applicationIcon: Image.asset('images/app_icon.png'),applicationName: 'Nattupedika',applicationLegalese: '...');
+                        },
                       leading: Icon(Icons.info_outline),
                     ),
                     ListTile(
