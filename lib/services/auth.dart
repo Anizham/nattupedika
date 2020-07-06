@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nattupedika/Screens/CustomerHome.dart';
-import 'package:nattupedika/Authentication/SignUpPage.dart';
 import '../Screens/ShopkeeperHome.dart';
 import '../main.dart';
 import '../models/user.dart';
@@ -24,75 +23,32 @@ class AuthService {
     return _auth.onAuthStateChanged.map(_userFromFirebaseUser);
   }
 
-  Future<bool> signInWithPhoneNo(
-      String phoneNo, BuildContext context, String userType) async {
+  Future<bool> signInWithPhoneNo(String phoneNo,BuildContext context,String userType) async {
     _auth.verifyPhoneNumber(
-        phoneNumber: '+91' + phoneNo,
+        phoneNumber: phoneNo,
         timeout: Duration(seconds: 60),
-        verificationCompleted: (AuthCredential credential) async {
+        verificationCompleted: (AuthCredential credential) async{
           Navigator.of(context).pop();
-          AuthResult result = await _auth.signInWithCredential(credential);
-          User user = _userFromFirebaseUser(result.user);
+          AuthResult result=await _auth.signInWithCredential(credential);
+          User user=_userFromFirebaseUser(result.user);
 
-          if (user != null) {
-         final QuerySnapshot snapshot = await Firestore.instance
-                .collection('users')
-                .where('id', isEqualTo: user.uid)
-                .getDocuments();
-          final List<DocumentSnapshot> documents = snapshot.documents;
-             if(documents.length==0)
-             {
-               showDialog(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Didnt Sign up'),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text('Looks like you didnt sign up'),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Cancel'),
-                onPressed: () {
-                  Navigator.pop(context, 0);
-                },
-              ),
-              FlatButton(
-                child: Text('Sign Up'),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpPage(userType: userType,)));
-                },
-              ),
-            ],
-          );
-        });
-         }
-            if (userType == "customer") {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomerHomePage(
-                            user: user,
-                          )));
-            } else {
-              print(phoneNo);
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ShopkeeperHomePage(user: user,)));
+          if(user!=null){
+            if(userType=="customer"){
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context)=>CustomerHomePage(user: user,)
+              ));
+            }else{
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context)=>ShopkeeperHomePage(user: user,)
+              ));
             }
           }
         },
-        verificationFailed: (AuthException e) {
+        verificationFailed: (AuthException e){
           print(e.message.toString());
           return false;
         },
-        codeSent: (String verificationId, [int forceResendingToken]) {
+        codeSent: (String verificationId, [int forceResendingToken]){
           showDialog(
               context: context,
               barrierDismissible: false,
@@ -112,42 +68,33 @@ class AuthService {
                       child: Text("VERIFY"),
                       textColor: Colors.white,
                       color: Colors.green,
-                      onPressed: () async {
+                      onPressed: () async{
                         final code = _codeController.text.trim();
 
-                        AuthCredential credential =
-                            PhoneAuthProvider.getCredential(
-                                verificationId: verificationId, smsCode: code);
-                        AuthResult result =
-                            await _auth.signInWithCredential(credential);
+                        AuthCredential credential = PhoneAuthProvider.getCredential(verificationId: verificationId, smsCode: code);
+                        AuthResult result = await _auth.signInWithCredential(credential);
 
-                        User user = _userFromFirebaseUser(result.user);
+                        FirebaseUser user = result.user;
 
-                        print(user.uid);
-                        if (user != null) {
-                          if (userType == "customer") {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => CustomerHomePage(
-                                          user: user,
-                                        )));
-                          } else {
-                            print(phoneNo);
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => 
-                                     ShopkeeperHomePage(user: user,) ));
+                        if(user != null){
+                          if(userType=="customer"){
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context)=>CustomerHomePage(user: _userFromFirebaseUser(user),)
+                            ));
+                          }else{
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context)=>ShopkeeperHomePage(user: _userFromFirebaseUser(user),)
+                            ));
                           }
-                        } else {
+                        }else{
                           print("Error");
                         }
                       },
                     )
                   ],
                 );
-              });
+              }
+          );
         },
         codeAutoRetrievalTimeout: null);
     return false;

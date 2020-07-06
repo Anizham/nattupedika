@@ -192,10 +192,6 @@ class _HomePageState extends State<ShopkeeperHomePage> {
                       leading: Icon(Icons.help),
                     ),
                     ListTile(
-                      title: Text("Settings"),
-                      leading: Icon(Icons.settings),
-                    ),
-                    ListTile(
                       title: Text("Log Out"),
                       leading: Icon(Icons.power_settings_new),
                       onTap: () async {

@@ -72,7 +72,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               keyboardType: TextInputType.text,
                               onChanged: (val) {
                                 setState(() {
-                                  phoneNo = val;
+                                  phoneNo = '+91'+val;
                                 });
                               },
                               decoration: InputDecoration(

@@ -6,10 +6,11 @@ class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
       child: Center(
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Color(0xfff5a623)),
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.lightGreenAccent),
         ),
       ),
       color: Colors.white,
