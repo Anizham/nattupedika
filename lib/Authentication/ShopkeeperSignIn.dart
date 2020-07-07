@@ -90,8 +90,14 @@ class _SignInState extends State<ShopkeeperSignInPage> {
                                                   _userType,
                                                   'demo');
                                             } else {
-                                              final snackBar = SnackBar(content: Text('Account not registered.',style: TextStyle(color: Colors.green),));
-                                              Scaffold.of(context).showSnackBar(snackBar);
+                                              final snackBar = SnackBar(
+                                                  content: Text(
+                                                'Account not registered.',
+                                                style: TextStyle(
+                                                    color: Colors.green),
+                                              ));
+                                              Scaffold.of(context)
+                                                  .showSnackBar(snackBar);
                                             }
                                           });
                                         }
