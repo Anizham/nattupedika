@@ -11,8 +11,7 @@ import 'package:nattupedika/services/notification.dart';
 
 class ShopkeeperHomePage extends StatefulWidget {
   final User user;
-  ShopkeeperHomePage({Key key, @required this.user})
-      : super(key: key);
+  ShopkeeperHomePage({Key key, @required this.user}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -28,7 +27,11 @@ class _HomePageState extends State<ShopkeeperHomePage> {
   bool _shopStatus = true;
 
   Future updateStatus(String uid, String status) async {
-    await Firestore.instance.collection("users").document(uid).get().then((value) {
+    await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .get()
+        .then((value) {
       Firestore.instance
           .collection('data')
           .document(value.data['phoneNo'])
@@ -182,15 +185,20 @@ class _HomePageState extends State<ShopkeeperHomePage> {
                     Divider(),
                     ListTile(
                       title: Text("About"),
+                      onTap: () {
+                        showAboutDialog(
+                            context: context,
+                            applicationVersion: '1.1.1',
+                            applicationIcon: Image.asset('images/app_icon.png'),
+                            applicationName: 'Nattupedika',
+                            applicationLegalese:
+                                'An app to connect local businesses with local people which enables people to buy groceries from them.');
+                      },
                       leading: Icon(Icons.info_outline),
                     ),
                     ListTile(
                       title: Text("Help"),
                       leading: Icon(Icons.help),
-                    ),
-                    ListTile(
-                      title: Text("Settings"),
-                      leading: Icon(Icons.settings),
                     ),
                     ListTile(
                       title: Text("Log Out"),
@@ -214,39 +222,80 @@ class _HomePageState extends State<ShopkeeperHomePage> {
                         .collection('userchats')
                         .snapshots(),
                     builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container(
-                          height: MediaQuery.of(context).size.height,
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  height: 300,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.9,
-                                  child:
-                                      SvgPicture.asset("images/no_chats.svg"),
+                      // if (snapshot.hasData) {
+                      return snapshot.hasData &&
+                              snapshot.data.documents.length > 0
+                          ? ListView.builder(
+                              padding: EdgeInsets.all(10.0),
+                              itemBuilder: (context, index) => buildItem(
+                                  context, snapshot.data.documents[index]),
+                              itemCount: snapshot.data.documents.length,
+                            )
+                          : Container(
+                              height: MediaQuery.of(context).size.height,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      height: 300,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.9,
+                                      child: SvgPicture.asset(
+                                          "images/no_chats.svg"),
+                                    ),
+                                    Text(
+                                      "No Orders Yet",
+                                      style: TextStyle(
+                                          fontFamily: 'Montserrat',
+                                          fontSize: 18.0,
+                                          color: Colors.grey),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  "No Orders Yet",
-                                  style: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontSize: 18.0,
-                                      color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      } else {
-                        return ListView.builder(
-                          padding: EdgeInsets.all(10.0),
-                          itemBuilder: (context, index) => buildItem(
-                              context, snapshot.data.documents[index]),
-                          itemCount: snapshot.data.documents.length,
-                        );
-                      }
+                              ),
+                            );
+                      // }
+
+                      // if (!snapshot.hasData) {
+                      //   return Container(
+                      //       child: Center(
+                      //     child: CircularProgressIndicator(),
+                      //   ));
+                      // } else {
+                      //   return snapshot.hasData
+                      //       ? ListView.builder(
+                      //           padding: EdgeInsets.all(10.0),
+                      //           itemBuilder: (context, index) => buildItem(
+                      //               context, snapshot.data.documents[index]),
+                      //           itemCount: snapshot.data.documents.length,
+                      //         )
+                      //       : Container(
+                      //           height: MediaQuery.of(context).size.height,
+                      //           child: Center(
+                      //             child: Column(
+                      //               mainAxisAlignment: MainAxisAlignment.center,
+                      //               children: <Widget>[
+                      //                 Container(
+                      //                   height: 300,
+                      //                   width:
+                      //                       MediaQuery.of(context).size.width *
+                      //                           0.9,
+                      //                   child: SvgPicture.asset(
+                      //                       "images/no_chats.svg"),
+                      //                 ),
+                      //                 Text(
+                      //                   "No Orders Yet",
+                      //                   style: TextStyle(
+                      //                       fontFamily: 'Montserrat',
+                      //                       fontSize: 18.0,
+                      //                       color: Colors.grey),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         );
+                      // }
                     })),
           )),
     );

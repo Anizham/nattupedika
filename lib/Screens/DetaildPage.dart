@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nattupedika/Screens/Chat.dart';
 
 class DetailedPage extends StatelessWidget {
-  final String address;
+  final String location;
   final String phoneNo;
   final String timing;
   final String shopName;
@@ -10,7 +10,7 @@ class DetailedPage extends StatelessWidget {
   DetailedPage({
     Key key,
     @required this.shopName,
-    @required this.address,
+    @required this.location,
     @required this.timing,
     @required this.phoneNo,
     @required this.shopkeeperUid
@@ -52,8 +52,8 @@ class DetailedPage extends StatelessWidget {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(Icons.location_on),
-                      title: Text("Address"),
-                      subtitle: Text(address),
+                      title: Text("Location"),
+                      subtitle: Text(location),
                     ),
                     Divider(),
                     ListTile(
