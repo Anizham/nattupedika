@@ -82,15 +82,37 @@ class _SignInState extends State<CustomerSignInPage> {
                                       onPressed: () async {
                                         if (_formKey.currentState.validate()) {
                                           await _db
-                                              .checkShopkeeperExists(_phoneNo)
+                                              .checkCustomerExists(_phoneNo)
                                               .then((value) {
                                             if (value) {
-                                              _auth.signInWithPhoneNo(
-                                                  _phoneNo, context, _userType);
+//                                              setState(() {
+//                                                loading=true;
+//                                              });
+                                              dynamic result =
+                                                  _auth.signInWithPhoneNo(
+                                                      _phoneNo,
+                                                      context,
+                                                      _userType);
+                                              if(!result){
+                                                final snackBar = SnackBar(
+                                                    content: Text(
+                                                      'SignIn failed..',
+                                                      style: TextStyle(
+                                                          color: Colors.green),
+                                                    ));
+                                                Scaffold.of(context)
+                                                    .showSnackBar(snackBar);
+                                              }
                                             } else {
                                               print("not siged in");
-                                              final snackBar = SnackBar(content: Text('Not signed up yet.',style: TextStyle(color: Colors.green),));
-                                              Scaffold.of(context).showSnackBar(snackBar);
+                                              final snackBar = SnackBar(
+                                                  content: Text(
+                                                'Not signed up yet.',
+                                                style: TextStyle(
+                                                    color: Colors.green),
+                                              ));
+                                              Scaffold.of(context)
+                                                  .showSnackBar(snackBar);
                                             }
                                           });
                                         }

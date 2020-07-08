@@ -84,11 +84,19 @@ class _SignInState extends State<ShopkeeperSignInPage> {
                                               .checkShopkeeperExists(_phoneNo)
                                               .then((value) {
                                             if (value) {
-                                              _auth.registerWithPhoneNo(
+//                                              setState(() {
+//                                                loading=true;
+//                                              });
+                                              dynamic result=_auth.registerWithPhoneNo(
                                                   _phoneNo,
                                                   context,
                                                   _userType,
                                                   'demo');
+                                              if(!result){
+
+                                                final snackBar = SnackBar(content: Text('SignIn failed.',style: TextStyle(color: Colors.green),));
+                                                Scaffold.of(context).showSnackBar(snackBar);
+                                              }
                                             } else {
                                               final snackBar = SnackBar(content: Text('Account not registered.',style: TextStyle(color: Colors.green),));
                                               Scaffold.of(context).showSnackBar(snackBar);

@@ -5,7 +5,7 @@ class DatabaseService{
 
 
   final CollectionReference usersCollection = Firestore.instance.collection('users');
-  final CollectionReference customersCollection = Firestore.instance.collection('data');
+  final CollectionReference shopkeeperCollection = Firestore.instance.collection('data');
 
   Future<String> getUserType(String uid) async{
     var docSnapshot=await usersCollection.document(uid).get();
@@ -18,7 +18,7 @@ class DatabaseService{
   }
 
   Future<bool> checkShopkeeperExists(String phoneNo) async{
-    final QuerySnapshot snapshot = await customersCollection
+    final QuerySnapshot snapshot = await shopkeeperCollection
         .where('phoneNo', isEqualTo: phoneNo)
         .getDocuments();
     final List<DocumentSnapshot> documents = snapshot.documents;
@@ -39,6 +39,11 @@ class DatabaseService{
     }else{
       return true;
     }
+  }
+
+  Future<String> getShopkeeperName(String phoneNo) async{
+    var docSnapshot=await shopkeeperCollection.document(phoneNo).get();
+    return docSnapshot.data['name'];
   }
 
 }

@@ -29,8 +29,8 @@ class Stores extends StatelessWidget {
                                   builder: (context) => DetailedPage(
                                     shopName: snapshot.data.documents[index]
                                     ['name'],
-                                    address: snapshot.data.documents[index]
-                                    ['address'],
+                                    location: snapshot.data.documents[index]
+                                    ['location'],
                                     phoneNo: snapshot.data.documents[index]
                                     ['phoneNo'],
                                     timing: snapshot
