@@ -1,4 +1,4 @@
-package com.example.nattupedika
+package com.tistcochin.nattupedika
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

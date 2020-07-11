@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:nattupedika/Screens/privacypolicy.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -192,7 +193,11 @@ class _HomePageState extends State<ShopkeeperHomePage> {
                             applicationIcon: Image.asset('images/app_icon.png'),
                             applicationName: 'Nattupedika',
                             applicationLegalese:
-                                'An app to connect local businesses with local people which enables people to buy groceries from them.');
+                                'This application can be used by all audiences.',
+                            children: [
+                              Text(
+                                  'An app to connect local businesses with local people which enables people to buy groceries from them')
+                            ]);
                       },
                       leading: Icon(Icons.info_outline),
                     ),
@@ -205,6 +210,16 @@ class _HomePageState extends State<ShopkeeperHomePage> {
                       leading: Icon(Icons.power_settings_new),
                       onTap: () async {
                         await _auth.signOut(context);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.text_format),
+                      title: Text('Privacy policy'),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PrivacyPolicy()));
                       },
                     ),
                   ],

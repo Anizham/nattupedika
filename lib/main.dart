@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:nattupedika/RootPage.dart';
 import 'package:nattupedika/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'RootPage.dart';
 import 'models/user.dart';
-
 
 void main() => runApp(MyApp());
 
@@ -17,12 +16,12 @@ class MyApp extends StatelessWidget {
       catchError: (_, __) => null,
       value: AuthService().user,
       child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Nattupeedika',
-            theme: ThemeData(
-              primarySwatch: Colors.green,
-            ),
-            home: SplashScreen(),
+        debugShowCheckedModeBanner: false,
+        title: 'Nattupeedika',
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+        ),
+        home: SplashScreen(),
       ),
     );
   }
@@ -37,29 +36,26 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed
-    (
-      Duration(seconds: 3),
-      ()
-      {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>RootPage()));
-      }
-    );
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => RootPage()));
+    });
   }
+
   @override
   Widget build(BuildContext context) {
-    return  Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("images/bg.jpg"), fit: BoxFit.cover)
-                ),
-                child: Center(
-                  child:Container(
-                        height: 300.0,
-                        child: SvgPicture.asset(
-                          "images/text.svg",
-                          color: Colors.green,
-                        )),),
+    return Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("images/bg.jpg"), fit: BoxFit.cover)),
+      child: Center(
+        child: Container(
+            height: 300.0,
+            child: SvgPicture.asset(
+              "images/text.svg",
+              color: Colors.green,
+            )),
+      ),
     );
   }
 }

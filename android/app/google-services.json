@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:395202170869:android:5c7502b339d3dfa9fd5abc",
         "android_client_info": {
-          "package_name": "com.example.nattupedika"
+          "package_name": "com.tistcochin.nattupedika"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "395202170869-7tir0e8ma2jhfiuh5a4ddsbjciitc6u1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.nattupedika",
+            "package_name": "com.tistcochin.nattupedika",
             "certificate_hash": "86881dd16b10b3d72638cdb3b35f5e0a6b62cec8"
           }
         },

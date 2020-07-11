@@ -1,7 +1,7 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:nattupedika/Screens/privacypolicy.dart';
 import 'package:nattupedika/models/user.dart';
 import 'package:nattupedika/services/auth.dart';
 import 'package:nattupedika/services/db.dart';
@@ -22,14 +22,12 @@ class CustomerHomePage extends StatefulWidget {
 }
 
 class _CustomerHomePageState extends State<CustomerHomePage> {
-
   int _selectedIndex = 0;
-  String username='';
+  String username = '';
 
   final AuthService _auth = AuthService();
-  final DatabaseService _db=DatabaseService();
-  final NotificationService _notification=NotificationService();
-
+  final DatabaseService _db = DatabaseService();
+  final NotificationService _notification = NotificationService();
 
 //  static const TextStyle optionStyle =
 //      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -46,7 +44,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
     super.initState();
     _notification.registerNotification(widget.user.uid);
     _notification.configLocalNotification();
-    _db.getUserName(widget.user.uid).then((value) => username=value);
+    _db.getUserName(widget.user.uid).then((value) => username = value);
   }
 
   void _onItemTapped(int index) {
@@ -117,7 +115,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                     children: <Widget>[
                       CircleAvatar(
                         backgroundImage:
-                        AssetImage("images/emergency_avatar.jpg"),
+                            AssetImage("images/emergency_avatar.jpg"),
                         radius: 60.0,
                       ),
                       Text(username),
@@ -129,7 +127,17 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                 children: <Widget>[
                   ListTile(
                     title: Text("About"),
-                    onTap: () => showAboutDialog(context: context,applicationVersion: '1.1.1',applicationIcon: Image.asset('images/app_icon.png'),applicationName: 'Nattupedika',applicationLegalese: 'An app to connect local businesses with local people which enables people to buy groceries from them.'),
+                    onTap: () => showAboutDialog(
+                        context: context,
+                        applicationVersion: '1.1.1',
+                        applicationIcon: Image.asset('images/app_icon.png'),
+                        applicationName: 'Nattupedika',
+                        applicationLegalese:
+                            'This application can be used by all audiences.',
+                        children: [
+                          Text(
+                              'An app to connect local businesses with local people which enables people to buy groceries from them.')
+                        ]),
                     leading: Icon(Icons.info_outline),
                   ),
                   ListTile(
@@ -143,14 +151,23 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                       await _auth.signOut(context);
                     },
                   ),
+                  ListTile(
+                    leading: Icon(Icons.text_format),
+                    title: Text('Privacy policy'),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PrivacyPolicy()));
+                    },
+                  ),
                 ],
               )
             ],
           ),
         ),
         body: WillPopScope(
-            child: _widgetOptions[_selectedIndex],
-            onWillPop: onBackPress),
+            child: _widgetOptions[_selectedIndex], onWillPop: onBackPress),
         bottomNavigationBar: Theme(
           data: Theme.of(context).copyWith(
             canvasColor: Colors.green,
