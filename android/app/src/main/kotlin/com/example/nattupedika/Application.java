@@ -1,4 +1,4 @@
-package com.tistcochin.nattupedika;
+package com.tistkochi.nattupedika;
 
 import io.flutter.app.FlutterApplication;
 import io.flutter.plugin.common.PluginRegistry;

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:nattupedika/RootPage.dart';
 import 'package:nattupedika/Screens/CustomerHome.dart';
 import '../Screens/ShopkeeperHome.dart';
 import '../main.dart';
@@ -369,7 +370,7 @@ class AuthService {
       }
       await _auth.signOut();
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => MyApp()),
+          MaterialPageRoute(builder: (context) => RootPage()),
           (Route<dynamic> route) => false);
     } catch (e) {
       print(e.toString());

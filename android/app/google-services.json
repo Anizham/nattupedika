@@ -8,33 +8,33 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:395202170869:android:5c7502b339d3dfa9fd5abc",
+        "mobilesdk_app_id": "1:395202170869:android:5921e904f741ac31fd5abc",
         "android_client_info": {
-          "package_name": "com.example.nattupedika"
+          "package_name": "com.tistcochin.nattupedika"
         }
       },
       "oauth_client": [
         {
-          "client_id": "395202170869-prqqcijr06h1n205ufrbdkikejt0ptqc.apps.googleusercontent.com",
+          "client_id": "395202170869-9i026ga4sg4ofq7e250i1kfmn6nhiq79.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.nattupedika",
+            "package_name": "com.tistcochin.nattupedika",
             "certificate_hash": "dd3c4fb528cd445193bbd3ad4fe57f328aac54bc"
           }
         },
         {
-          "client_id": "395202170869-vv9ee5kps0mquanps5npul8t8nkro8bm.apps.googleusercontent.com",
+          "client_id": "395202170869-2eftpllblsslsoevjsfas3jaj8mg85v0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.nattupedika",
+            "package_name": "com.tistcochin.nattupedika",
             "certificate_hash": "5c44a49ef55b49ac4ca08d70030c2a4e871136bc"
           }
         },
         {
-          "client_id": "395202170869-7tir0e8ma2jhfiuh5a4ddsbjciitc6u1.apps.googleusercontent.com",
+          "client_id": "395202170869-a3u8n174k6kp66metsds0smk9kru8e1n.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.nattupedika",
+            "package_name": "com.tistcochin.nattupedika",
             "certificate_hash": "86881dd16b10b3d72638cdb3b35f5e0a6b62cec8"
           }
         },
@@ -61,18 +61,18 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:395202170869:android:5921e904f741ac31fd5abc",
+        "mobilesdk_app_id": "1:395202170869:android:4fa81b2f4c6fe916fd5abc",
         "android_client_info": {
-          "package_name": "com.tistcochin.nattupedika"
+          "package_name": "com.tistkochi.nattupedika"
         }
       },
       "oauth_client": [
         {
-          "client_id": "395202170869-a3u8n174k6kp66metsds0smk9kru8e1n.apps.googleusercontent.com",
+          "client_id": "395202170869-eglrmm0ks0ku8s35vip0a1am761ege4v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.tistcochin.nattupedika",
-            "certificate_hash": "86881dd16b10b3d72638cdb3b35f5e0a6b62cec8"
+            "package_name": "com.tistkochi.nattupedika",
+            "certificate_hash": "5c44a49ef55b49ac4ca08d70030c2a4e871136bc"
           }
         },
         {

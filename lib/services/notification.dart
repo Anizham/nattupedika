@@ -50,8 +50,8 @@ class NotificationService {
   void showNotification(message) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
       Platform.isAndroid
-          ? 'com.tistcochin.nattupedika'
-          : 'com.tistcochin.nattupedika',
+          ? 'com.tistkochi.nattupedika'
+          : 'com.tistkochi.nattupedika',
       'Nattupeedikaa',
       'your channel description',
       playSound: true,
